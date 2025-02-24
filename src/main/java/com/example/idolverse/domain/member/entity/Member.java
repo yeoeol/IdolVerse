@@ -2,6 +2,7 @@ package com.example.idolverse.domain.member.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.member.entity.enums.ProfileType;
@@ -32,12 +33,16 @@ public class Member extends BaseEntity {
 	private Long memberId;
 
 	private String email;
-	private String nickname;
+
+	@Builder.Default // 이후 회원 정보 수정
+	private String nickname = UUID.randomUUID().toString();
 	private String password;
 
-	private String profileName;
+	@Builder.Default // 이후 회원 정보 수정
+	private String profileName = UUID.randomUUID().toString();;
 
 	private ProfileType profileType;
+
 	private Boolean hasMembership;
 	private Boolean hasOfficialMark;
 
