@@ -1,0 +1,46 @@
+package com.example.idolverse.domain.member.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.example.idolverse.domain.communitymember.entity.CommunityMember;
+import com.example.idolverse.domain.member.entity.enums.ProfileType;
+import com.example.idolverse.global.common.entity.BaseEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class Member extends BaseEntity {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "member_id")
+	private Long memberId;
+
+	private String email;
+	private String nickname;
+	private String password;
+
+	private String profileName;
+
+	private ProfileType profileType;
+	private Boolean hasMembership;
+	private Boolean hasOfficialMark;
+
+	@OneToMany(mappedBy = "member")
+	private List<CommunityMember> communities = new ArrayList<>();
+}
