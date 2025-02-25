@@ -24,4 +24,6 @@ public class AccountController {
 		RegisterResponseDto responseDto = accountService.register(requestDto);
 		return ResponseEntity.ok(responseDto);
 	}
+
+
 }
