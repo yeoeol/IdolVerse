@@ -2,22 +2,31 @@ package com.example.idolverse.domain.account.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.idolverse.domain.account.dto.LoginRequestDto;
+import com.example.idolverse.domain.account.dto.LoginResponseDto;
 import com.example.idolverse.domain.account.dto.RegisterRequestDto;
 import com.example.idolverse.domain.account.dto.RegisterResponseDto;
+import com.example.idolverse.domain.account.dto.TokenResponseDto;
 import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.member.repository.MemberRepository;
 import com.example.idolverse.global.exception.GeneralException;
 import com.example.idolverse.global.exception.code.ErrorCode;
+import com.example.idolverse.global.security.jwt.JwtProvider;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AccountService {
 
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final JwtProvider jwtProvider;
 
 	public RegisterResponseDto register(RegisterRequestDto requestDto) {
 		validateEmail(requestDto.email());
@@ -26,6 +35,14 @@ public class AccountService {
 		return RegisterResponseDto.from(memberRepository.save(member));
 	}
 
+	public TokenResponseDto login(LoginRequestDto requestDto) {
+		Member member = memberRepository.findByEmail(requestDto.email())
+			.filter(m -> passwordEncoder.matches(requestDto.password(), m.getPassword()))
+			.orElseThrow(() -> new GeneralException(ErrorCode.LOGIN_FAILED));
+		String accessToken = jwtProvider.generateAccessToken(member.getMemberId());
+		String refreshToken = jwtProvider.generateRefreshToken();
+		return TokenResponseDto.of(accessToken, refreshToken, member);
+	}
 
 	private void validateEmail(String email) {
 		if (memberRepository.existsByEmail(email)) {

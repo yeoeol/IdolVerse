@@ -26,10 +26,10 @@ public class JwtProvider {
 	}
 
 	// 액세스 토큰 생성
-	public String generateAccessToken(String memberId) {
+	public String generateAccessToken(Long memberId) {
 		long now = System.currentTimeMillis();
 		return Jwts.builder()
-			.subject(memberId)
+			.subject(String.valueOf(memberId))
 			.issuedAt(new Date(now))
 			.expiration(new Date(now + jwtProperties.getAccessToken().getExpiration()))
 			.signWith(signingKey)
