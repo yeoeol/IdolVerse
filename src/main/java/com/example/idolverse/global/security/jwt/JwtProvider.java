@@ -4,8 +4,19 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.example.idolverse.domain.member.entity.Member;
+import com.example.idolverse.domain.member.repository.MemberRepository;
+import com.example.idolverse.global.common.service.CustomUserDetailsService;
+import com.example.idolverse.global.exception.GeneralException;
+import com.example.idolverse.global.exception.code.ErrorCode;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -15,10 +26,13 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtProvider {
 
+	private final CustomUserDetailsService customUserDetailsService;
 	private final JwtProperties jwtProperties;
 	private final SecretKey signingKey;
 
-	public JwtProvider(JwtProperties jwtProperties) {
+	public JwtProvider(MemberRepository memberRepository, CustomUserDetailsService customUserDetailsService,
+		JwtProperties jwtProperties) {
+		this.customUserDetailsService = customUserDetailsService;
 		this.jwtProperties = jwtProperties;
 		this.signingKey = Keys.hmacShaKeyFor(
 			Decoders.BASE64URL.decode(jwtProperties.getSecret())
@@ -48,15 +62,31 @@ public class JwtProvider {
 
 	public boolean validateToken(String token) {
 		try {
-			Jwts.parser()
-				.verifyWith(signingKey)
-				.build()
-				.parseSignedClaims(token);
+			getClaims(token);
 			return true;
 		} catch (ExpiredJwtException e) {
 			return false;
 		} catch (JwtException e) {
 			return false;
 		}
+	}
+
+	public Authentication getAuthentication(String token) {
+		Claims claims = getClaims(token);
+		Long memberId = Long.valueOf(claims.getSubject());
+
+		// customUserDetailsService.loadUserByUsername()
+		//
+		// UserDetails principal = new User(member.getEmail(), "", )
+		// return new UsernamePasswordAuthenticationToken()
+		return null;
+	}
+
+	private Claims getClaims(String token) {
+		return Jwts.parser()
+			.verifyWith(signingKey)
+			.build()
+			.parseSignedClaims(token)
+			.getPayload();
 	}
 }

@@ -16,6 +16,7 @@ public class JwtProperties {
 	private String secret;
 	private AccessTokenProperties accessToken;
 	private RefreshTokenProperties refreshToken;
+	private String headerAuthorization;
 
 	@Data
 	public static class AccessTokenProperties {

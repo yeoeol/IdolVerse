@@ -49,7 +49,7 @@ public class AccountController {
 	}
 
 	private void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-		response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+		response.setHeader(jwtProperties.getHeaderAuthorization(), "Bearer " + accessToken);
 	}
 
 	private void setHttpOnlyCookie(HttpServletResponse response, String refreshToken) {
