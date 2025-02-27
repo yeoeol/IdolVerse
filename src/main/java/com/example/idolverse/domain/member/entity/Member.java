@@ -35,6 +35,7 @@ public class Member extends BaseEntity {
 	@Column(name = "member_id")
 	private Long memberId;
 
+	@Column(unique = true)
 	private String email;
 
 	@Builder.Default // 이후 회원 정보 수정

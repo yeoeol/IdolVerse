@@ -39,7 +39,7 @@ public class AccountService {
 		Member member = memberRepository.findByEmail(requestDto.email())
 			.filter(m -> passwordEncoder.matches(requestDto.password(), m.getPassword()))
 			.orElseThrow(() -> new GeneralException(ErrorCode.LOGIN_FAILED));
-		String accessToken = jwtProvider.generateAccessToken(member.getMemberId());
+		String accessToken = jwtProvider.generateAccessToken(member.getEmail());
 		String refreshToken = jwtProvider.generateRefreshToken();
 		return TokenResponseDto.of(accessToken, refreshToken, member);
 	}

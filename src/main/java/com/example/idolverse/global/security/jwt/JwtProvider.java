@@ -40,10 +40,10 @@ public class JwtProvider {
 	}
 
 	// 액세스 토큰 생성
-	public String generateAccessToken(Long memberId) {
+	public String generateAccessToken(String email) {
 		long now = System.currentTimeMillis();
 		return Jwts.builder()
-			.subject(String.valueOf(memberId))
+			.subject(email)
 			.issuedAt(new Date(now))
 			.expiration(new Date(now + jwtProperties.getAccessToken().getExpiration()))
 			.signWith(signingKey)
@@ -73,13 +73,11 @@ public class JwtProvider {
 
 	public Authentication getAuthentication(String token) {
 		Claims claims = getClaims(token);
-		Long memberId = Long.valueOf(claims.getSubject());
+		String email = claims.getSubject();
 
-		// customUserDetailsService.loadUserByUsername()
-		//
-		// UserDetails principal = new User(member.getEmail(), "", )
-		// return new UsernamePasswordAuthenticationToken()
-		return null;
+		UserDetails principal = customUserDetailsService.loadUserByUsername(email);
+		System.out.println("password = " + principal.getPassword());
+		return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
 	}
 
 	private Claims getClaims(String token) {
