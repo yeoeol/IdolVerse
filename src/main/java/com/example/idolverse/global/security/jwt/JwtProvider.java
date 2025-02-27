@@ -6,15 +6,10 @@ import javax.crypto.SecretKey;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.example.idolverse.domain.member.entity.Member;
-import com.example.idolverse.domain.member.repository.MemberRepository;
 import com.example.idolverse.global.common.service.CustomUserDetailsService;
-import com.example.idolverse.global.exception.GeneralException;
-import com.example.idolverse.global.exception.code.ErrorCode;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -30,8 +25,7 @@ public class JwtProvider {
 	private final JwtProperties jwtProperties;
 	private final SecretKey signingKey;
 
-	public JwtProvider(MemberRepository memberRepository, CustomUserDetailsService customUserDetailsService,
-		JwtProperties jwtProperties) {
+	public JwtProvider(CustomUserDetailsService customUserDetailsService, JwtProperties jwtProperties) {
 		this.customUserDetailsService = customUserDetailsService;
 		this.jwtProperties = jwtProperties;
 		this.signingKey = Keys.hmacShaKeyFor(

@@ -2,6 +2,9 @@ package com.example.idolverse.global.security.jwt;
 
 import java.io.IOException;
 
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,8 +26,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		String authorizationHeader = request.getHeader(jwtProperties.getHeaderAuthorization());
 		String token = resolveHeader(authorizationHeader);
+		try {
+			if (jwtProvider.validateToken(token)) {
+				Authentication authentication = jwtProvider.getAuthentication(token);
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+		} catch (Exception e) {
+			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
+			return;
+		}
 
+		filterChain.doFilter(request, response);
 	}
 
 	public String resolveHeader(String authorizationHeader) {
