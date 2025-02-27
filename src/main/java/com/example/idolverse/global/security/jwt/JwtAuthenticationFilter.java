@@ -1,5 +1,7 @@
 package com.example.idolverse.global.security.jwt;
 
+import static com.example.idolverse.global.security.config.SecurityConfig.*;
+
 import java.io.IOException;
 
 import org.springframework.http.MediaType;
@@ -24,6 +26,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
 
+		if (isPermitUri(request.getRequestURI())) {
+			SecurityContextHolder.getContext().setAuthentication(null);
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		String authorizationHeader = request.getHeader(jwtProperties.getHeaderAuthorization());
 		String token = resolveHeader(authorizationHeader);
 		try {
@@ -35,7 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-			filterChain.doFilter(request, response);
 			return;
 		}
 
@@ -47,5 +54,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return authorizationHeader.substring(7);
 		}
 		return null;
+	}
+
+	private boolean isPermitUri(String requestURI) {
+		for (String uri : permitURI) {
+			uri = uri.replace("*","");
+			if (requestURI.contains(uri)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -23,6 +23,10 @@ public class SecurityConfig {
 	private final CustomUserDetailsService customUserDetailsService;
 	private final JwtProperties jwtProperties;
 	private final JwtProvider jwtProvider;
+	public static final String[] permitURI = {
+		"/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**",
+		"/api/v1/accounts/**"
+	};
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -34,8 +38,10 @@ public class SecurityConfig {
 		http
 			.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/v1/members/**").hasRole("ADMIN")
-				.requestMatchers("/api/v1/accounts/**").permitAll()
+				.requestMatchers(permitURI).permitAll()
+				.requestMatchers(
+					"/api/v1/members/**"
+				).hasRole("ADMIN")
 				.anyRequest().authenticated()
 			)
 			.userDetailsService(customUserDetailsService)
