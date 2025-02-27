@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
+			filterChain.doFilter(request, response);
 			return;
 		}
 
