@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.AntPathMatcher;
 
 import com.example.idolverse.global.common.service.CustomUserDetailsService;
 import com.example.idolverse.global.security.jwt.JwtAuthenticationFilter;
@@ -23,6 +24,8 @@ public class SecurityConfig {
 	private final CustomUserDetailsService customUserDetailsService;
 	private final JwtProperties jwtProperties;
 	private final JwtProvider jwtProvider;
+	private final AntPathMatcher pathMatcher;
+
 	public static final String[] permitURI = {
 		"/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**",
 		"/api/v1/accounts/**"
@@ -50,7 +53,7 @@ public class SecurityConfig {
 			);
 
 		http
-			.addFilterBefore(new JwtAuthenticationFilter(jwtProperties, jwtProvider), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(new JwtAuthenticationFilter(jwtProperties, jwtProvider, pathMatcher), UsernamePasswordAuthenticationFilter.class);
 
 
 		return http.build();

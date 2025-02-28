@@ -1,14 +1,16 @@
 package com.example.idolverse.global.security.jwt;
 
-import static com.example.idolverse.global.security.config.SecurityConfig.*;
-
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.example.idolverse.global.security.config.SecurityConfig;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,16 +23,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtProperties jwtProperties;
 	private final JwtProvider jwtProvider;
+	private final AntPathMatcher pathMatcher;
+
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		String requestURI = request.getRequestURI();
+		return (Arrays.stream(SecurityConfig.permitURI).anyMatch(
+			pattern -> pathMatcher.match(pattern, requestURI)
+		));
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-
-		if (isPermitUri(request.getRequestURI())) {
-			SecurityContextHolder.getContext().setAuthentication(null);
-			filterChain.doFilter(request, response);
-			return;
-		}
 
 		String authorizationHeader = request.getHeader(jwtProperties.getHeaderAuthorization());
 		String token = resolveHeader(authorizationHeader);
@@ -54,15 +59,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return authorizationHeader.substring(7);
 		}
 		return null;
-	}
-
-	private boolean isPermitUri(String requestURI) {
-		for (String uri : permitURI) {
-			uri = uri.replace("*","");
-			if (requestURI.contains(uri)){
-				return true;
-			}
-		}
-		return false;
 	}
 }
