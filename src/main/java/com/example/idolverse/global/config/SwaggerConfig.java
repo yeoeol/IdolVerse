@@ -19,7 +19,7 @@ public class SwaggerConfig {
 			.components(new Components().addSecuritySchemes(
 				"BearerAuth", getSecurityScheme()
 			))
-			.addSecurityItem(new SecurityRequirement().addList("access-token"));
+			.addSecurityItem(new SecurityRequirement().addList("BearerAuth"));
 	}
 
 	private Info getInfo() {
