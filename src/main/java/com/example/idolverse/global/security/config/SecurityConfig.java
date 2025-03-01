@@ -28,7 +28,8 @@ public class SecurityConfig {
 
 	public static final String[] permitURI = {
 		"/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**",
-		"/api/v1/accounts/**"
+		"/api/v1/accounts/**",
+		"/redisTest"
 	};
 
 	@Bean
@@ -53,8 +54,8 @@ public class SecurityConfig {
 			);
 
 		http
-			.addFilterBefore(new JwtAuthenticationFilter(jwtProperties, jwtProvider, pathMatcher), UsernamePasswordAuthenticationFilter.class);
-
+			.addFilterBefore(new JwtAuthenticationFilter(jwtProperties, jwtProvider, pathMatcher),
+				UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
