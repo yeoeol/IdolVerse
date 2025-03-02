@@ -1,10 +1,11 @@
 package com.example.idolverse.domain.member.dto;
 
-import java.util.List;
-
-import com.example.idolverse.domain.communitymember.dto.CommunityMemberInfoDto;
+import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.member.entity.enums.ProfileType;
 
+import lombok.Builder;
+
+@Builder
 public record MemberInfoDto(
 	Long memberId,
 	String email,
@@ -12,7 +13,18 @@ public record MemberInfoDto(
 	String profileName,
 	ProfileType profileType,
 	Boolean hasMembership,
-	Boolean hasOfficialMark,
-	List<CommunityMemberInfoDto> communityMemberInfoDtoList
+	Boolean hasOfficialMark
 ) {
+
+	public static MemberInfoDto from(Member member) {
+		return MemberInfoDto.builder()
+			.memberId(member.getMemberId())
+			.email(member.getEmail())
+			.nickname(member.getNickname())
+			.profileName(member.getProfileName())
+			.profileType(member.getProfileType())
+			.hasMembership(member.getHasMembership())
+			.hasOfficialMark(member.getHasOfficialMark())
+			.build();
+	}
 }

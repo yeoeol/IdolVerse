@@ -70,7 +70,6 @@ public class JwtProvider {
 		String email = claims.getSubject();
 
 		UserDetails principal = customUserDetailsService.loadUserByUsername(email);
-		System.out.println("password = " + principal.getPassword());
 		return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
 	}
 

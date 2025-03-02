@@ -3,12 +3,51 @@ package com.example.idolverse.domain.communitymember.dto;
 import java.time.LocalDateTime;
 
 import com.example.idolverse.domain.community.dto.CommunityInfoDto;
+import com.example.idolverse.domain.community.entity.Community;
+import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.member.dto.MemberInfoDto;
+import com.example.idolverse.domain.member.entity.Member;
+import com.example.idolverse.global.common.entity.enums.AvailableActionType;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
 public record CommunityMemberInfoDto(
-	Long id,
-	CommunityInfoDto communityInfoDto,
-	MemberInfoDto memberInfoDto,
-	LocalDateTime joinedAt
+	Long memberId,
+	Long communityId,
+	Boolean joined,
+	String profileName,
+	LocalDateTime firstJoinAt,
+	// AvailableActionType availableActions,
+	FollowCount followCount,
+	Boolean hasMembership,
+	Boolean hasOfficialMark,
+	LocalDateTime joinedDate
 ) {
+
+	public static CommunityMemberInfoDto from(Community community, Member member) {
+		return CommunityMemberInfoDto.builder()
+			.memberId(member.getMemberId())
+			.communityId(community.getCommunityId())
+			.joined(true)
+			.profileName(member.getProfileName())
+			.firstJoinAt(LocalDateTime.now())
+			.followCount(new FollowCount(member.getFollowingCount(), member.getFollowerCount()))
+			.hasMembership(member.getHasMembership())
+			.hasOfficialMark(member.getHasOfficialMark())
+			.joinedDate(member.getCreatedAt())
+			.build();
+	}
+
+	@Data
+	public static class FollowCount {
+		private Long followingCount;
+		private Long followerCount;
+
+		public FollowCount(Long followingCount, Long followerCount) {
+			this.followingCount = followingCount;
+			this.followerCount = followerCount;
+		}
+	}
 }

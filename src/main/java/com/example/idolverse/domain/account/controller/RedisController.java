@@ -19,11 +19,11 @@ public class RedisController {
 	private final RedisTemplate<String, Object> redisTemplate;
 
 	@PostMapping("/redisTest")
-	public String addRedisKey(@RequestBody RefreshRequestDto requestDto) {
+	public Object addRedisKey(@RequestBody RefreshRequestDto requestDto) {
 		String prefix = UUID.randomUUID().toString();
 		String key = prefix + "refreshToken:";
 		ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-		valueOperations.set(key, requestDto.refreshToken(), 30);
-		return "redisTest";
+		valueOperations.set(key, requestDto.refreshToken());
+		return valueOperations.get(key);
 	}
 }
