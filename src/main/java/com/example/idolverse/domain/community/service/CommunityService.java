@@ -7,10 +7,13 @@ import com.example.idolverse.domain.community.dto.CommunityCreateRequestDto;
 import com.example.idolverse.domain.community.dto.CommunityInfoDto;
 import com.example.idolverse.domain.community.entity.Community;
 import com.example.idolverse.domain.community.repository.CommunityRepository;
+import com.example.idolverse.global.exception.GeneralException;
+import com.example.idolverse.global.exception.code.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CommunityService {
 
@@ -21,5 +24,10 @@ public class CommunityService {
 		Community community = requestDto.toEntity(requestDto);
 		Community savedCommunity = communityRepository.save(community);
 		return CommunityInfoDto.from(savedCommunity);
+	}
+
+	public Community findByUrlPath(String urlPath) {
+		return communityRepository.findByUrlPath(urlPath)
+			.orElseThrow(() -> new GeneralException(ErrorCode.COMMUNITY_NOT_FOUND));
 	}
 }
