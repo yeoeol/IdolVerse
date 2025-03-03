@@ -32,6 +32,8 @@ public class Community extends BaseEntity {
 
 	private String communityName;
 
+	private String urlPath;
+
 	private Long memberCount;
 
 	private String fandomName;
