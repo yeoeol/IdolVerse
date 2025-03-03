@@ -2,12 +2,8 @@ package com.example.idolverse.domain.communitymember.dto;
 
 import java.time.LocalDateTime;
 
-import com.example.idolverse.domain.community.dto.CommunityInfoDto;
 import com.example.idolverse.domain.community.entity.Community;
-import com.example.idolverse.domain.communitymember.entity.CommunityMember;
-import com.example.idolverse.domain.member.dto.MemberInfoDto;
 import com.example.idolverse.domain.member.entity.Member;
-import com.example.idolverse.global.common.entity.enums.AvailableActionType;
 
 import lombok.Builder;
 import lombok.Data;

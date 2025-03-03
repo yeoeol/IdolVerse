@@ -1,4 +1,4 @@
-package com.example.idolverse.global.common.entity.enums;
+package com.example.idolverse.domain.communitymember.entity.enums;
 
 public enum AvailableActionType {
 	READ_POST,
