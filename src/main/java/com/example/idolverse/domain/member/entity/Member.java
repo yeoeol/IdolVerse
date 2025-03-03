@@ -48,7 +48,7 @@ public class Member extends BaseEntity {
 	private MemberRole role = MemberRole.USER;
 
 	@Builder.Default // 이후 회원 정보 수정
-	private String profileName = UUID.randomUUID().toString();;
+	private String profileName = UUID.randomUUID().toString();
 
 	@Enumerated(EnumType.STRING)
 	@Builder.Default

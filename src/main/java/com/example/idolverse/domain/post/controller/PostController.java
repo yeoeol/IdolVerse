@@ -26,7 +26,6 @@ public class PostController {
 		@RequestBody PostRequestDto requestDto,
 		@AuthenticationPrincipal CustomMemberDetails customMemberDetails
 	) {
-		System.out.println("PostController.post");
 		PostResponseDto responseDto = postService.post(urlPath, requestDto.content(), customMemberDetails);
 		return ResponseEntity.ok(responseDto);
 	}
