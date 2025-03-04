@@ -3,6 +3,7 @@ package com.example.idolverse.domain.communitymember.dto;
 import java.time.LocalDateTime;
 
 import com.example.idolverse.domain.community.entity.Community;
+import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.member.entity.Member;
 
 import lombok.Builder;
@@ -33,6 +34,20 @@ public record CommunityMemberInfoDto(
 			.hasMembership(member.getHasMembership())
 			.hasOfficialMark(member.getHasOfficialMark())
 			.joinedDate(member.getCreatedAt())
+			.build();
+	}
+
+	public static CommunityMemberInfoDto from(CommunityMember communityMember) {
+		return CommunityMemberInfoDto.builder()
+			.memberId(communityMember.getMember().getMemberId())
+			.communityId(communityMember.getCommunity().getCommunityId())
+			.joined(true)
+			.profileName(communityMember.getProfileName())
+			.firstJoinAt(LocalDateTime.now())
+			.followCount(new FollowCount(0L, 0L))
+			.hasMembership(false)
+			.hasOfficialMark(false)
+			.joinedDate(communityMember.getMember().getCreatedAt())
 			.build();
 	}
 

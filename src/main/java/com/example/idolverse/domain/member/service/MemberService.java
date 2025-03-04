@@ -24,4 +24,9 @@ public class MemberService {
 
 		return MemberInfoDto.from(member);
 	}
+
+	public Member findById(Long memberId) {
+		return memberRepository.findById(memberId)
+			.orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
+	}
 }

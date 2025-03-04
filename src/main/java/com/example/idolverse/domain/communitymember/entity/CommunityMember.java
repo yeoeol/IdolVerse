@@ -32,6 +32,8 @@ public class CommunityMember {
 	@JoinColumn(name = "community_id")
 	private Community community;
 
+	private String profileName;
+
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;

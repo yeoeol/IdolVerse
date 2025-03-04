@@ -30,4 +30,9 @@ public class CommunityService {
 		return communityRepository.findByUrlPath(urlPath)
 			.orElseThrow(() -> new GeneralException(ErrorCode.COMMUNITY_NOT_FOUND));
 	}
+
+	public Community findById(Long communityId) {
+		return communityRepository.findById(communityId)
+			.orElseThrow(() -> new GeneralException(ErrorCode.COMMUNITY_NOT_FOUND));
+	}
 }
