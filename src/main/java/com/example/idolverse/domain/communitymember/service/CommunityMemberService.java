@@ -1,5 +1,7 @@
 package com.example.idolverse.domain.communitymember.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,7 @@ public class CommunityMemberService {
 		throw new GeneralException(ErrorCode.COMMUNITY_MEMBER_NOT_REGISTER);
 	}
 
+	@PreAuthorize("#requestDto.memberId == authentication.principal.memberId")	// 현재 로그인한 사용자와 register 메서드를 호출한 사용자가 동일한지 검증
 	@Transactional
 	public CommunityMemberInfoDto register(CommunityRegisterRequestDto requestDto) {
 		Community community = communityService.findById(requestDto.communityId());

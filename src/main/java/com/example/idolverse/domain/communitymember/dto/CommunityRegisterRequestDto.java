@@ -14,7 +14,7 @@ public record CommunityRegisterRequestDto(
 			.community(community)
 			.member(member)
 			.profileName(profileName)
-			.followerCount(0L)
+			.followingCount(0L)
 			.followerCount(0L)
 			.build();
 	}
