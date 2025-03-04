@@ -59,7 +59,4 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member")
 	private List<CommunityMember> communities = new ArrayList<>();
-
-	private Long followingCount;
-	private Long followerCount;
 }

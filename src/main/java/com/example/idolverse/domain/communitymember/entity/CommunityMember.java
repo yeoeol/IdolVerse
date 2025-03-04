@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,4 +40,7 @@ public class CommunityMember {
 	private Member member;
 
 	private LocalDateTime joinedAt;
+
+	private Long followingCount;
+	private Long followerCount;
 }
