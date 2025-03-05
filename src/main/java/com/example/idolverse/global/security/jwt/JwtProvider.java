@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.example.idolverse.global.common.service.CustomUserDetailsService;
+import com.example.idolverse.global.exception.GeneralException;
+import com.example.idolverse.global.exception.code.ErrorCode;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -59,9 +61,9 @@ public class JwtProvider {
 			getClaims(token);
 			return true;
 		} catch (ExpiredJwtException e) {
-			return false;
+			throw new GeneralException(ErrorCode.TOKEN_EXPIRED);
 		} catch (JwtException e) {
-			return false;
+			throw new GeneralException(ErrorCode.INVALID_TOKEN);
 		}
 	}
 

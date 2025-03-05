@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.idolverse.domain.account.dto.LoginRequestDto;
 import com.example.idolverse.domain.account.dto.LoginResponseDto;
+import com.example.idolverse.domain.account.dto.RefreshRequestDto;
 import com.example.idolverse.domain.account.dto.RegisterRequestDto;
 import com.example.idolverse.domain.account.dto.RegisterResponseDto;
 import com.example.idolverse.domain.account.dto.TokenResponseDto;
 import com.example.idolverse.domain.account.service.AccountService;
+import com.example.idolverse.domain.account.service.RefreshTokenService;
 import com.example.idolverse.global.security.jwt.JwtProperties;
 import com.example.idolverse.global.security.jwt.JwtProvider;
 
@@ -26,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountController {
 
 	private final AccountService accountService;
+	private final RefreshTokenService refreshTokenService;
 	private final JwtProperties jwtProperties;
 
 	@PostMapping("/register")
@@ -40,6 +43,20 @@ public class AccountController {
 		@RequestBody LoginRequestDto requestDto
 	) {
 		TokenResponseDto responseDto = accountService.login(requestDto);
+
+		setAccessTokenHeader(response, responseDto.accessToken());
+		setHttpOnlyCookie(response, responseDto.refreshToken());
+
+		LoginResponseDto loginResponseDto = LoginResponseDto.from(responseDto.member());
+		return ResponseEntity.ok(loginResponseDto);
+	}
+
+	@PostMapping("/refresh")
+	public ResponseEntity<LoginResponseDto> refresh(
+		HttpServletResponse response,
+		@RequestBody RefreshRequestDto requestDto
+	) {
+		TokenResponseDto responseDto = accountService.refresh(requestDto);
 
 		setAccessTokenHeader(response, responseDto.accessToken());
 		setHttpOnlyCookie(response, responseDto.refreshToken());

@@ -15,6 +15,8 @@ public enum ErrorCode {
 	// Account Errors
 	DUPLICATE_EMAIL(HttpStatus.CONFLICT, "ACCOUNT001", "이미 사용 중인 이메일입니다."),
 	LOGIN_FAILED(HttpStatus.BAD_REQUEST, "ACCOUNT002", "이메일 또는 비밀번호가 틀렸습니다."),
+	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT003", "유효하지 않은 토큰입니다."),
+	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "ACCOUNT004", "토큰이 만료되었습니다."),
 
 	// Member Errors
 	MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER001", "Member를 찾을 수 없습니다."),
