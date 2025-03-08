@@ -59,7 +59,6 @@ public class AccountController {
 		TokenResponseDto responseDto = accountService.refresh(requestDto);
 
 		setAccessTokenHeader(response, responseDto.accessToken());
-		setHttpOnlyCookie(response, responseDto.refreshToken());
 
 		LoginResponseDto loginResponseDto = LoginResponseDto.from(responseDto.member());
 		return ResponseEntity.ok(loginResponseDto);

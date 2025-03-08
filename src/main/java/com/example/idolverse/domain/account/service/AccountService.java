@@ -45,7 +45,11 @@ public class AccountService {
 			.filter(m -> passwordEncoder.matches(requestDto.password(), m.getPassword()))
 			.orElseThrow(() -> new GeneralException(ErrorCode.LOGIN_FAILED));
 
-		return generateToken(member);
+		String accessToken = jwtProvider.generateAccessToken(member.getEmail());
+		String refreshToken = jwtProvider.generateRefreshToken();
+
+		refreshTokenService.saveRefreshToken(refreshToken, member.getMemberId());
+		return TokenResponseDto.of(accessToken, refreshToken, member);
 	}
 
 	public TokenResponseDto refresh(RefreshRequestDto requestDto) {
@@ -54,15 +58,13 @@ public class AccountService {
 		RefreshToken refreshToken = refreshTokenService.findByRefreshToken(requestDto.refreshToken());
 		Member member = memberService.findById(refreshToken.getMemberId());
 
-		return generateToken(member);
+		String accessToken = jwtProvider.generateAccessToken(member.getEmail());
+
+		return TokenResponseDto.of(accessToken, null, member);
 	}
 
 	public TokenResponseDto generateToken(Member member) {
-		String accessToken = jwtProvider.generateAccessToken(member.getEmail());
-		String refreshToken = jwtProvider.generateRefreshToken();
 
-		refreshTokenService.saveRefreshToken(refreshToken, member.getMemberId());
-		return TokenResponseDto.of(accessToken, refreshToken, member);
 	}
 
 	private void validateEmail(String email) {
