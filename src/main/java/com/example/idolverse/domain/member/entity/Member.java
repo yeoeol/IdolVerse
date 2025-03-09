@@ -37,6 +37,8 @@ public class Member extends BaseEntity {
 	@Column(unique = true)
 	private String email;
 
+	private String userKey;
+
 	@Builder.Default // 이후 회원 정보 수정
 	private String nickname = UUID.randomUUID().toString();
 	private String password;

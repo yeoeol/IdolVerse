@@ -4,15 +4,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.idolverse.domain.community.entity.Community;
 import com.example.idolverse.domain.community.service.CommunityService;
 import com.example.idolverse.domain.communitymember.dto.CommunityMemberInfoDto;
+import com.example.idolverse.domain.communitymember.dto.CommunityMemberUpdateRequestDto;
 import com.example.idolverse.domain.communitymember.dto.CommunityRegisterRequestDto;
 import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.communitymember.repository.CommunityMemberRepository;
+import com.example.idolverse.domain.image.service.ImageService;
 import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.member.service.MemberService;
+import com.example.idolverse.global.common.entity.CustomMemberDetails;
 import com.example.idolverse.global.exception.GeneralException;
 import com.example.idolverse.global.exception.code.ErrorCode;
 
@@ -25,6 +29,7 @@ public class CommunityMemberService {
 	private final CommunityMemberRepository communityMemberRepository;
 	private final CommunityService communityService;
 	private final MemberService memberService;
+	private final ImageService imageService;
 
 	public boolean existsMemberInCommunity(Community community, Member member) {
 		if (communityMemberRepository.existsByCommunityAndMember(community, member)) {
@@ -42,5 +47,19 @@ public class CommunityMemberService {
 		CommunityMember communityMember = requestDto.toEntity(community, member, requestDto.profileName());
 		CommunityMember savedCommunityMember = communityMemberRepository.save(communityMember);
 		return CommunityMemberInfoDto.from(savedCommunityMember);
+	}
+
+	@Transactional
+	public CommunityMemberInfoDto updateInfo(CommunityMemberUpdateRequestDto requestDto, MultipartFile file, Long memberId) {
+		CommunityMember communityMember = communityMemberRepository.findById(requestDto.communityMemberId())
+			.orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
+		if (communityMember.getMember().getMemberId() != memberId) {
+			throw new GeneralException(ErrorCode.ACCESS_DENIED);
+		}
+
+		String profileImageUrl = imageService.uploadProfileImage(file);
+
+		communityMember.update(requestDto.profileName(), requestDto.profileComment(), profileImageUrl);
+		return CommunityMemberInfoDto.from(communityMember);
 	}
 }

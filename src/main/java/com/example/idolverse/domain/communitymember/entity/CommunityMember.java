@@ -9,6 +9,7 @@ import com.example.idolverse.domain.community.entity.Community;
 import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.communitymember.entity.enums.ProfileType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,6 +33,7 @@ public class CommunityMember {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "community_member_id")
 	private Long id;
 
 	@ManyToOne
@@ -63,4 +65,10 @@ public class CommunityMember {
 	private Boolean hasOfficialMark = false;
 
 	private LocalDateTime joinedAt;
+
+	public void update(String profileName, String profileComment, String profileImageUrl) {
+		this.profileName = profileName;
+		this.profileComment = profileComment;
+		this.profileImageUrl = profileImageUrl;
+	}
 }

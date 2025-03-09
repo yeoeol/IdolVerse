@@ -11,7 +11,7 @@ public enum ErrorCode {
 
 	// Common Errors
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON000", "서버 에러"),
-
+	ACCESS_DENIED(HttpStatus.FORBIDDEN, "COMMON001", "접근이 거부되었습니다."),
 	// Account Errors
 	DUPLICATE_EMAIL(HttpStatus.CONFLICT, "ACCOUNT001", "이미 사용 중인 이메일입니다."),
 	LOGIN_FAILED(HttpStatus.BAD_REQUEST, "ACCOUNT002", "이메일 또는 비밀번호가 틀렸습니다."),
