@@ -3,6 +3,8 @@ package com.example.idolverse.domain.communitymember.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import com.example.idolverse.domain.community.entity.Community;
 import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.communitymember.entity.enums.ProfileType;

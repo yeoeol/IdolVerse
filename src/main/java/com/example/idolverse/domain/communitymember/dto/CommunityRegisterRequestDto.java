@@ -1,5 +1,7 @@
 package com.example.idolverse.domain.communitymember.dto;
 
+import java.time.LocalDateTime;
+
 import com.example.idolverse.domain.community.entity.Community;
 import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.member.entity.Member;
@@ -14,7 +16,7 @@ public record CommunityRegisterRequestDto(
 			.community(community)
 			.member(member)
 			.profileName(profileName)
-			.profileComment("")
+			.joinedAt(LocalDateTime.now())
 			.followingCount(0L)
 			.followerCount(0L)
 			.build();
