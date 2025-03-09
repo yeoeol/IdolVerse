@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.member.entity.enums.MemberRole;
-import com.example.idolverse.domain.member.entity.enums.ProfileType;
 import com.example.idolverse.global.common.entity.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -20,7 +19,6 @@ import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -46,16 +44,6 @@ public class Member extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
 	private MemberRole role = MemberRole.USER;
-
-	@Builder.Default // 이후 회원 정보 수정
-	private String profileName = UUID.randomUUID().toString();
-
-	@Enumerated(EnumType.STRING)
-	@Builder.Default
-	private ProfileType profileType = ProfileType.FAN;
-
-	private Boolean hasMembership;
-	private Boolean hasOfficialMark;
 
 	@OneToMany(mappedBy = "member")
 	private List<CommunityMember> communities = new ArrayList<>();

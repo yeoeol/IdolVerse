@@ -15,6 +15,9 @@ public record CommunityMemberInfoDto(
 	Long communityId,
 	Boolean joined,
 	String profileName,
+	String profileImageUrl,
+	String profileComment,
+	String profileType,
 	LocalDateTime firstJoinAt,
 	// AvailableActionType availableActions,
 	FollowCount followCount,
@@ -29,10 +32,13 @@ public record CommunityMemberInfoDto(
 			.communityId(communityMember.getCommunity().getCommunityId())
 			.joined(true)
 			.profileName(communityMember.getProfileName())
-			.firstJoinAt(LocalDateTime.now())
+			.profileImageUrl(communityMember.getProfileImageUrl())
+			.profileComment(communityMember.getProfileComment())
+			.profileType(communityMember.getProfileType().name())
+			.firstJoinAt(communityMember.getJoinedAt())
 			.followCount(new FollowCount(communityMember.getFollowingCount(), communityMember.getFollowerCount()))
-			.hasMembership(false)
-			.hasOfficialMark(false)
+			.hasMembership(communityMember.getHasMembership())
+			.hasOfficialMark(communityMember.getHasOfficialMark())
 			.joinedDate(communityMember.getMember().getCreatedAt())
 			.build();
 	}

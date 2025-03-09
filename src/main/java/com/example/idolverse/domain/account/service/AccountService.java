@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.idolverse.domain.account.dto.LoginRequestDto;
-import com.example.idolverse.domain.account.dto.LoginResponseDto;
 import com.example.idolverse.domain.account.dto.RefreshRequestDto;
 import com.example.idolverse.domain.account.dto.RegisterRequestDto;
 import com.example.idolverse.domain.account.dto.RegisterResponseDto;
@@ -18,8 +17,6 @@ import com.example.idolverse.global.exception.GeneralException;
 import com.example.idolverse.global.exception.code.ErrorCode;
 import com.example.idolverse.global.security.jwt.JwtProvider;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -61,10 +58,6 @@ public class AccountService {
 		String accessToken = jwtProvider.generateAccessToken(member.getEmail());
 
 		return TokenResponseDto.of(accessToken, null, member);
-	}
-
-	public TokenResponseDto generateToken(Member member) {
-
 	}
 
 	private void validateEmail(String email) {

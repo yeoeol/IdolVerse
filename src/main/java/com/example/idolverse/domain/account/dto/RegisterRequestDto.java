@@ -10,8 +10,6 @@ public record RegisterRequestDto(
 		return Member.builder()
 			.email(email)
 			.password(encodedPassword)
-			.hasMembership(false)
-			.hasOfficialMark(false)
 			.build();
 	}
 }
