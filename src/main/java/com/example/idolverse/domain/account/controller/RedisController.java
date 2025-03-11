@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.idolverse.domain.account.dto.RefreshRequestDto;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Hidden
 @RestController
 @RequiredArgsConstructor
 public class RedisController {

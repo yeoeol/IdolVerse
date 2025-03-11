@@ -8,8 +8,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.example.idolverse.domain.community.entity.Community;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
+@Schema(title = "커뮤니티 정보 DTO")
 @Builder
 public record CommunityInfoDto(
 	Long communityId,

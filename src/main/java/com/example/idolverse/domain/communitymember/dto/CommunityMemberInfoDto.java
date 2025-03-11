@@ -6,9 +6,11 @@ import com.example.idolverse.domain.community.entity.Community;
 import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.member.entity.Member;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+@Schema(title = "커뮤니티 내 회원 정보 DTO")
 @Builder
 public record CommunityMemberInfoDto(
 	Long memberId,
@@ -43,6 +45,7 @@ public record CommunityMemberInfoDto(
 			.build();
 	}
 
+	@Schema(description = "특정 멤버에 대한 팔로잉/팔로우 수 DTO")
 	@Data
 	public static class FollowCount {
 		private Long followingCount;

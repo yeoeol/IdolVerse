@@ -19,24 +19,28 @@ import com.example.idolverse.domain.account.service.RefreshTokenService;
 import com.example.idolverse.global.security.jwt.JwtProperties;
 import com.example.idolverse.global.security.jwt.JwtProvider;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Account-Controller", description = "회원가입 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
 
 	private final AccountService accountService;
-	private final RefreshTokenService refreshTokenService;
 	private final JwtProperties jwtProperties;
 
+	@Operation(summary = "회원가입")
 	@PostMapping("/register")
 	public ResponseEntity<RegisterResponseDto> register(@RequestBody RegisterRequestDto requestDto) {
 		RegisterResponseDto responseDto = accountService.register(requestDto);
 		return ResponseEntity.ok(responseDto);
 	}
 
+	@Operation(summary = "로그인")
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponseDto> login(
 		HttpServletResponse response,
@@ -51,6 +55,7 @@ public class AccountController {
 		return ResponseEntity.ok(loginResponseDto);
 	}
 
+	@Operation(summary = "access 토큰 재발급")
 	@PostMapping("/refresh")
 	public ResponseEntity<LoginResponseDto> refresh(
 		HttpServletResponse response,

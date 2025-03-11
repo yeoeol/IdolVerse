@@ -12,14 +12,18 @@ import com.example.idolverse.domain.post.dto.PostResponseDto;
 import com.example.idolverse.domain.post.service.PostService;
 import com.example.idolverse.global.common.entity.CustomMemberDetails;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Post-Controller", description = "특정 커뮤니티 게시글 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class PostController {
 
 	private final PostService postService;
 
+	@Operation(summary = "커뮤니티 게시글 작성")
 	@PostMapping("/{urlPath}/feed/posts")
 	public ResponseEntity<?> post(
 		@PathVariable String urlPath,

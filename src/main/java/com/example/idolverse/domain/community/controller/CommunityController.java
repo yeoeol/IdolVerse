@@ -10,8 +10,11 @@ import com.example.idolverse.domain.community.dto.CommunityCreateRequestDto;
 import com.example.idolverse.domain.community.dto.CommunityInfoDto;
 import com.example.idolverse.domain.community.service.CommunityService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Community-Controller", description = "커뮤니티 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/communities")
@@ -19,6 +22,7 @@ public class CommunityController {
 
 	private final CommunityService communityService;
 
+	@Operation(summary = "커뮤니티 생성 (관리자 권한)")
 	@PostMapping("/create")
 	public ResponseEntity<CommunityInfoDto> communityCreate(@RequestBody CommunityCreateRequestDto requestDto) {
 		CommunityInfoDto communityInfoDto = communityService.communityCreate(requestDto);
