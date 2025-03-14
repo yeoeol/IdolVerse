@@ -29,7 +29,7 @@ public class SecurityConfig {
 	private final AntPathMatcher pathMatcher;
 
 	public static final String[] permitURI = {
-		"/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**",
+		"/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml",
 		"/api/v1/accounts/**",
 		"/redisTest"
 	};
