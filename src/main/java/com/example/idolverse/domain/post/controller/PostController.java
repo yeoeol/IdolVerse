@@ -25,7 +25,7 @@ public class PostController {
 
 	private final PostService postService;
 
-	@Operation(summary = "커뮤니티 게시글 작성")
+	@Operation(summary = "특정 커뮤니티 게시글 작성")
 	@PostMapping("/{urlPath}/feed/posts")
 	public ResponseEntity<PostResponseDto> newPost(
 		@PathVariable String urlPath,
