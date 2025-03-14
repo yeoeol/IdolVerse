@@ -2,11 +2,13 @@ package com.example.idolverse.domain.post.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.idolverse.domain.post.dto.FeedTabPostsInfoDto;
 import com.example.idolverse.domain.post.dto.PostRequestDto;
 import com.example.idolverse.domain.post.dto.PostResponseDto;
 import com.example.idolverse.domain.post.service.PostService;
@@ -25,12 +27,21 @@ public class PostController {
 
 	@Operation(summary = "커뮤니티 게시글 작성")
 	@PostMapping("/{urlPath}/feed/posts")
-	public ResponseEntity<?> post(
+	public ResponseEntity<PostResponseDto> newPost(
 		@PathVariable String urlPath,
 		@RequestBody PostRequestDto requestDto,
 		@AuthenticationPrincipal CustomMemberDetails customMemberDetails
 	) {
 		PostResponseDto responseDto = postService.post(urlPath, requestDto.content(), customMemberDetails);
 		return ResponseEntity.ok(responseDto);
+	}
+
+	@Operation(summary = "특정 커뮤니티 전체 게시글 조회")
+	@GetMapping("/{urlPath}/feed")
+	public ResponseEntity<FeedTabPostsInfoDto> getPostsByUrlPath(
+		@PathVariable String urlPath
+	) {
+		FeedTabPostsInfoDto feedTabPostsInfoDto = postService.getAllPosts(urlPath);
+		return ResponseEntity.ok(feedTabPostsInfoDto);
 	}
 }
