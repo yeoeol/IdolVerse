@@ -40,8 +40,8 @@ public class CommunityMemberService {
 	@PreAuthorize("#requestDto.memberId == authentication.principal.memberId")
 	// 현재 로그인한 사용자와 register 메서드를 호출한 사용자가 동일한지 검증
 	@Transactional
-	public CommunityMemberInfoDto register(CommunityRegisterRequestDto requestDto) {
-		Community community = communityService.findById(requestDto.communityId());
+	public CommunityMemberInfoDto register(String urlPath, CommunityRegisterRequestDto requestDto) {
+		Community community = communityService.findByUrlPath(urlPath);
 		Member member = memberService.findById(requestDto.memberId());
 
 		CommunityMember communityMember = requestDto.toEntity(community, member, requestDto.profileName());
@@ -50,13 +50,15 @@ public class CommunityMemberService {
 	}
 
 	@Transactional
-	public CommunityMemberInfoDto updateInfo(CommunityMemberUpdateRequestDto requestDto, MultipartFile file,
-		Long memberId) {
-		CommunityMember communityMember = communityMemberRepository.findById(requestDto.communityMemberId())
+	public CommunityMemberInfoDto updateInfo(
+		Long communityMemberId,
+		CommunityMemberUpdateRequestDto requestDto,
+		MultipartFile file,
+		Long memberId
+	) {
+		CommunityMember communityMember = communityMemberRepository.findById(communityMemberId)
 			.orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
-		if (communityMember.getMember().getMemberId() != memberId) {
-			throw new GeneralException(ErrorCode.ACCESS_DENIED);
-		}
+		validateMemberId(communityMemberId, memberId);
 
 		String profileImageUrl = imageService.uploadProfileImage(file);
 
@@ -67,10 +69,14 @@ public class CommunityMemberService {
 	public CommunityMemberInfoDto getInfo(Long communityMemberId, Long memberId) {
 		CommunityMember communityMember = communityMemberRepository.findById(communityMemberId)
 			.orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
-		if (communityMember.getMember().getMemberId() != memberId) {
-			throw new GeneralException(ErrorCode.ACCESS_DENIED);
-		}
+		validateMemberId(communityMemberId, memberId);
 
 		return CommunityMemberInfoDto.from(communityMember);
+	}
+
+	private void validateMemberId(Long communityMemberId, Long memberId) {
+		if (communityMemberId != memberId) {
+			throw new GeneralException(ErrorCode.ACCESS_DENIED);
+		}
 	}
 }

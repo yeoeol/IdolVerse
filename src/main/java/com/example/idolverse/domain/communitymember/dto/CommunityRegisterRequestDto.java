@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(title = "커뮤니티 가입 요청 DTO")
 public record CommunityRegisterRequestDto(
 	Long memberId,
-	Long communityId,
 	String profileName
 ) {
 	public CommunityMember toEntity(Community community, Member member, String profileName) {

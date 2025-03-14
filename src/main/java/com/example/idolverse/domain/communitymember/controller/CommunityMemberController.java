@@ -26,38 +26,45 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "CommunityMember-Controller", description = "특정 커뮤니티와 멤버 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/communityMember")
 public class CommunityMemberController {
 
 	private final CommunityMemberService communityMemberService;
 
 	@Operation(summary = "특정 커뮤니티 가입")
-	@PostMapping("/register")
-	public ResponseEntity<CommunityMemberInfoDto> register(@RequestBody CommunityRegisterRequestDto requestDto) {
-		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.register(requestDto);
+	@PostMapping("/{urlPath}/register")
+	public ResponseEntity<CommunityMemberInfoDto> register(
+		@PathVariable String urlPath,
+		@RequestBody CommunityRegisterRequestDto requestDto
+	) {
+		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.register(urlPath, requestDto);
 		return ResponseEntity.ok(communityMemberInfoDto);
 	}
 
 	@Operation(summary = "특정 커뮤니티 내 회원 정보 조회")
-	@GetMapping("/profile/{id}")
+	@GetMapping("/{urlPath}/profile/{id}")
 	public ResponseEntity<CommunityMemberInfoDto> getMyPage(
+		@PathVariable String urlPath,
 		@PathVariable("id") Long communityMemberId,
 		@AuthenticationPrincipal CustomMemberDetails memberDetails
 	) {
-		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.getInfo(communityMemberId,
-			memberDetails.getMemberId());
+		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.getInfo(
+			communityMemberId, memberDetails.getMemberId()
+		);
 		return ResponseEntity.ok(communityMemberInfoDto);
 	}
 
 	@Operation(summary = "특정 커뮤니티 내 회원 정보 수정")
-	@PatchMapping("/my-page")
+	@PatchMapping("/{urlPath}/profile/{id}")
 	public ResponseEntity<CommunityMemberInfoDto> updateMyPage(
+		@PathVariable String urlPath,
+		@PathVariable("id") Long communityMemberId,
 		@ModelAttribute CommunityMemberUpdateRequestDto requestDto,
 		@RequestParam(value = "file", required = false) MultipartFile file,
 		@AuthenticationPrincipal CustomMemberDetails memberDetails
 	) {
-		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.updateInfo(requestDto, file,
-			memberDetails.getMemberId());
+		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.updateInfo(
+			communityMemberId, requestDto, file, memberDetails.getMemberId()
+		);
 		return ResponseEntity.ok(communityMemberInfoDto);
 	}
 }
