@@ -10,12 +10,14 @@ import lombok.Builder;
 public record RegisterResponseDto(
 	Long memberId,
 	String email,
+	String userKey,
 	String nickname
 ) {
 	public static RegisterResponseDto from(Member member) {
 		return RegisterResponseDto.builder()
 			.memberId(member.getMemberId())
 			.email(member.getEmail())
+			.userKey(member.getUserKey())
 			.nickname(member.getNickname())
 			.build();
 	}

@@ -1,5 +1,7 @@
 package com.example.idolverse.domain.account.dto;
 
+import java.util.UUID;
+
 import com.example.idolverse.domain.member.entity.Member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,6 +14,7 @@ public record RegisterRequestDto(
 	public Member toEntity(String encodedPassword) {
 		return Member.builder()
 			.email(email)
+			.userKey(UUID.randomUUID().toString())
 			.password(encodedPassword)
 			.build();
 	}
