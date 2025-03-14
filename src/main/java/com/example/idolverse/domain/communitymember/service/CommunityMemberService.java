@@ -1,7 +1,6 @@
 package com.example.idolverse.domain.communitymember.service;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,13 +15,13 @@ import com.example.idolverse.domain.communitymember.repository.CommunityMemberRe
 import com.example.idolverse.domain.image.service.ImageService;
 import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.member.service.MemberService;
-import com.example.idolverse.global.common.entity.CustomMemberDetails;
 import com.example.idolverse.global.exception.GeneralException;
 import com.example.idolverse.global.exception.code.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CommunityMemberService {
 
@@ -38,7 +37,8 @@ public class CommunityMemberService {
 		throw new GeneralException(ErrorCode.COMMUNITY_MEMBER_NOT_REGISTER);
 	}
 
-	@PreAuthorize("#requestDto.memberId == authentication.principal.memberId")	// 현재 로그인한 사용자와 register 메서드를 호출한 사용자가 동일한지 검증
+	@PreAuthorize("#requestDto.memberId == authentication.principal.memberId")
+	// 현재 로그인한 사용자와 register 메서드를 호출한 사용자가 동일한지 검증
 	@Transactional
 	public CommunityMemberInfoDto register(CommunityRegisterRequestDto requestDto) {
 		Community community = communityService.findById(requestDto.communityId());
@@ -50,7 +50,8 @@ public class CommunityMemberService {
 	}
 
 	@Transactional
-	public CommunityMemberInfoDto updateInfo(CommunityMemberUpdateRequestDto requestDto, MultipartFile file, Long memberId) {
+	public CommunityMemberInfoDto updateInfo(CommunityMemberUpdateRequestDto requestDto, MultipartFile file,
+		Long memberId) {
 		CommunityMember communityMember = communityMemberRepository.findById(requestDto.communityMemberId())
 			.orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
 		if (communityMember.getMember().getMemberId() != memberId) {
@@ -60,6 +61,16 @@ public class CommunityMemberService {
 		String profileImageUrl = imageService.uploadProfileImage(file);
 
 		communityMember.update(requestDto.profileName(), requestDto.profileComment(), profileImageUrl);
+		return CommunityMemberInfoDto.from(communityMember);
+	}
+
+	public CommunityMemberInfoDto getInfo(Long communityMemberId, Long memberId) {
+		CommunityMember communityMember = communityMemberRepository.findById(communityMemberId)
+			.orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
+		if (communityMember.getMember().getMemberId() != memberId) {
+			throw new GeneralException(ErrorCode.ACCESS_DENIED);
+		}
+
 		return CommunityMemberInfoDto.from(communityMember);
 	}
 }
