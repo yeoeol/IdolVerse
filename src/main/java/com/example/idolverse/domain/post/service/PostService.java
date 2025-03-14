@@ -1,5 +1,6 @@
 package com.example.idolverse.domain.post.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -7,9 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.idolverse.domain.community.entity.Community;
 import com.example.idolverse.domain.community.service.CommunityService;
+import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.communitymember.service.CommunityMemberService;
 import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.post.dto.FeedTabPostsInfoDto;
+import com.example.idolverse.domain.post.dto.PostRequestDto;
 import com.example.idolverse.domain.post.dto.PostsInfoDto;
 import com.example.idolverse.domain.post.dto.PostResponseDto;
 import com.example.idolverse.domain.post.entity.Post;
@@ -28,17 +31,21 @@ public class PostService {
 	private final CommunityMemberService communityMemberService;
 
 	@Transactional
-	public PostResponseDto post(String urlPath, String content, CustomMemberDetails customMemberDetails) {
+	public PostResponseDto post(String urlPath, PostRequestDto requestDto, CustomMemberDetails customMemberDetails) {
 		Community community = communityService.findByUrlPath(urlPath);
 		Member member = customMemberDetails.getMember();
 		communityMemberService.existsMemberInCommunity(community, member);
+
+		CommunityMember communityMember = communityMemberService.findById(requestDto.communityMemberId());
+
 		Post post = Post.builder()
-			.content(content)
-			.member(customMemberDetails.getMember())
+			.plainBody(requestDto.plainBody())
+			.communityMember(communityMember)
 			.community(community)
 			.build();
 
 		Post savedPost = postRepository.save(post);
+
 		return PostResponseDto.from(savedPost);
 	}
 
@@ -47,11 +54,10 @@ public class PostService {
 		List<Post> posts = postRepository.findPostsByCommunity(community);
 
 		List<PostResponseDto> postsInfoDtos = posts.stream()
-			.map(post -> PostResponseDto.from(post))
+			.map(p -> PostResponseDto.from(p))
 			.toList();
 
 		PostsInfoDto postsInfoDto = PostsInfoDto.from(postsInfoDtos);
-
 		return FeedTabPostsInfoDto.from(postsInfoDto);
 	}
 }

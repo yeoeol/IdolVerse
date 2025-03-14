@@ -32,7 +32,7 @@ public class PostController {
 		@RequestBody PostRequestDto requestDto,
 		@AuthenticationPrincipal CustomMemberDetails customMemberDetails
 	) {
-		PostResponseDto responseDto = postService.post(urlPath, requestDto.content(), customMemberDetails);
+		PostResponseDto responseDto = postService.post(urlPath, requestDto, customMemberDetails);
 		return ResponseEntity.ok(responseDto);
 	}
 

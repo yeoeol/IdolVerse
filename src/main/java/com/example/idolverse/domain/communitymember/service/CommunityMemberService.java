@@ -74,6 +74,11 @@ public class CommunityMemberService {
 		return CommunityMemberInfoDto.from(communityMember);
 	}
 
+	public CommunityMember findById(Long communityMemberId) {
+		return communityMemberRepository.findById(communityMemberId)
+			.orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
+	}
+
 	private void validateMemberId(Long communityMemberId, Long memberId) {
 		if (communityMemberId != memberId) {
 			throw new GeneralException(ErrorCode.ACCESS_DENIED);

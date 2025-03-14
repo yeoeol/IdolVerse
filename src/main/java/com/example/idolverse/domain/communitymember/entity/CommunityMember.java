@@ -34,7 +34,7 @@ public class CommunityMember {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "community_member_id")
-	private Long id;
+	private Long communityMemberId;
 
 	@ManyToOne
 	@JoinColumn(name = "community_id")
@@ -55,6 +55,9 @@ public class CommunityMember {
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	// @OneToMany(mappedBy = "communityMember")
+	// private List<Post> posts = new ArrayList<>();
 
 	private Long followingCount;
 	private Long followerCount;
