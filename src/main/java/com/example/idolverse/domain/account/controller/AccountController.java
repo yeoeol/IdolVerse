@@ -1,5 +1,7 @@
 package com.example.idolverse.domain.account.controller;
 
+import java.time.Duration;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -74,12 +76,14 @@ public class AccountController {
 	}
 
 	private void setHttpOnlyCookie(HttpServletResponse response, String refreshToken) {
+		long maxAgeSeconds = Duration.ofMillis(jwtProperties.getRefreshToken().getExpiration()).getSeconds();
+
 		ResponseCookie refreshTokenCookie = ResponseCookie
 			.from("refreshToken", refreshToken)
 				.httpOnly(true)
 				.secure(true)
 				.path("/")
-				.maxAge(jwtProperties.getRefreshToken().getExpiration())
+				.maxAge(maxAgeSeconds)
 				.build();
 		response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 	}
