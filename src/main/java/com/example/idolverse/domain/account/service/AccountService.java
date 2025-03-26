@@ -9,7 +9,6 @@ import com.example.idolverse.domain.account.dto.RefreshRequestDto;
 import com.example.idolverse.domain.account.dto.RegisterRequestDto;
 import com.example.idolverse.domain.account.dto.RegisterResponseDto;
 import com.example.idolverse.domain.account.dto.TokenResponseDto;
-import com.example.idolverse.domain.account.entity.RefreshToken;
 import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.member.repository.MemberRepository;
 import com.example.idolverse.domain.member.service.MemberService;
@@ -43,21 +42,23 @@ public class AccountService {
 			.orElseThrow(() -> new GeneralException(ErrorCode.LOGIN_FAILED));
 
 		String accessToken = jwtProvider.generateAccessToken(member.getEmail());
-		String refreshToken = jwtProvider.generateRefreshToken();
+		String refreshToken = jwtProvider.generateRefreshToken(member.getEmail());
 
-		refreshTokenService.saveRefreshToken(refreshToken, member.getMemberId());
+		refreshTokenService.saveRefreshToken(member.getEmail(), refreshToken);
 		return TokenResponseDto.of(accessToken, refreshToken, member);
 	}
 
 	public TokenResponseDto refresh(RefreshRequestDto requestDto) {
 		jwtProvider.validateToken(requestDto.refreshToken());
 
-		RefreshToken refreshToken = refreshTokenService.findByRefreshToken(requestDto.refreshToken());
-		Member member = memberService.findById(refreshToken.getMemberId());
+		String refreshToken = refreshTokenService.findRefreshToken(requestDto.refreshToken());
+		String email = jwtProvider.getSubject(refreshToken);
+
+		Member member = memberService.findMemberByEmail(email);
 
 		String accessToken = jwtProvider.generateAccessToken(member.getEmail());
 
-		return TokenResponseDto.of(accessToken, null, member);
+		return TokenResponseDto.of(accessToken, refreshToken, member);
 	}
 
 	private void validateEmail(String email) {

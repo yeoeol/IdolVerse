@@ -15,6 +15,8 @@ public class RedisConfig {
 		return new LettuceConnectionFactory();
 	}
 
+	// TODO: 캐시매니저 추가
+
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate() {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();

@@ -47,9 +47,10 @@ public class JwtProvider {
 	}
 
 	// 리프레시 토큰 생성
-	public String generateRefreshToken() {
+	public String generateRefreshToken(String email) {
 		long now = System.currentTimeMillis();
 		return Jwts.builder()
+			.subject(email)
 			.issuedAt(new Date(now))
 			.expiration(new Date(now + jwtProperties.getRefreshToken().getExpiration()))
 			.signWith(signingKey)
@@ -73,6 +74,11 @@ public class JwtProvider {
 
 		UserDetails principal = customUserDetailsService.loadUserByUsername(email);
 		return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
+	}
+
+	public String getSubject(String token) {
+		Claims claims = getClaims(token);
+		return claims.getSubject();
 	}
 
 	private Claims getClaims(String token) {
