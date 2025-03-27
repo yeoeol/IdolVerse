@@ -1,18 +1,16 @@
-jwt:
-  secret: ${JWT_SECRET} # JWT 서명에 사용할 비밀키
-  access-token:
-    expiration: ${EXPIRED_ACCESS}  # 30분 (단위: 밀리초)
-  refresh-token:
-    expiration: ${EXPIRED_REFRESH}  # 7일 (단위: 밀리초)
-  header-authorization: ${JWT_HEADER}
-
-file:
-  path: ${FILE_PATH}
-
 spring:
   profiles:
-    active: ${PROFILE}
+    active: local
+    group:
+      local: local, common, secret
+      blue: blue, common, secret
+      green: green, common, secret
+
+server:
+  env: blue
+
 ---
+
 spring:
   config:
     activate:
@@ -36,17 +34,26 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
+
+server:
+  port: 8080
+  serverAddress: localhost
+
+serverName: local_server
+
 ---
+
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: blue
 
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
     redis:
@@ -60,3 +67,51 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+server:
+  port: 8080
+  serverAddress: ${EC2_PUBLIC_IP}
+
+serverName: blue_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: green
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8081
+  serverAddress: ${EC2_PUBLIC_IP}
+
+serverName: green_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: common
+
+file:
+  path: ${FILE_PATH}
