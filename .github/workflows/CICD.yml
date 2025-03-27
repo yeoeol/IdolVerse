@@ -72,17 +72,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-            echo "JWT_SECRET=${{ secrets.EXPIRED_ACCESS }}" >> .env
-            echo "JWT_SECRET=${{ secrets.EXPIRED_REFRESH }}" >> .env
-            echo "JWT_SECRET=${{ secrets.JWT_HEADER }}" >> .env
-            echo "JWT_SECRET=${{ secrets.DB_URL }}" >> .env
-            echo "JWT_SECRET=${{ secrets.DB_USERNAME }}" >> .env
-            echo "JWT_SECRET=${{ secrets.DB_PASSWORD }}" >> .env
-            echo "JWT_SECRET=${{ secrets.FILE_PATH }}" >> .env
-            echo "JWT_SECRET=${{ secrets.REDIS_HOST }}" >> .env
-            echo "JWT_SECRET=${{ secrets.REDIS_PORT }}" >> .env
-            echo "JWT_SECRET=${{ secrets.EC2_PUBLIC_IP }}" >> .env
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
             sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
       
