@@ -36,32 +36,31 @@ jobs:
         run: docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/live_server .
       - name: Push Docker
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
-
+        
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Set target IP
         run: |
-          # 더 강력한 상태 확인 로직
-          if STATUS=$(curl -s -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}:8080/env") && [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}:8080/env")
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}/env")
+          echo $STATUS
+          if [ $STATUS = 200 ]; then
+            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/env")
+          else
+            CURRENT_UPSTREAM=green
+          fi
+          echo CURRENT_UPSTREAM=$CURRENT_UPSTREAM >> $GITHUB_ENV
+          if [ $CURRENT_UPSTREAM = blue ]; then
             echo "CURRENT_PORT=8080" >> $GITHUB_ENV
             echo "STOPPED_PORT=8081" >> $GITHUB_ENV
             echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
-          elif STATUS=$(curl -s -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}:8081/env") && [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}:8081/env")
-            echo "CURRENT_PORT=8081" >> $GITHUB_ENV
-            echo "STOPPED_PORT=8080" >> $GITHUB_ENV
-            echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
           else
-            # 두 포트 모두 응답 없을 경우 기본값 설정
             echo "CURRENT_PORT=8081" >> $GITHUB_ENV
             echo "STOPPED_PORT=8080" >> $GITHUB_ENV
             echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
           fi
-          echo "CURRENT_UPSTREAM=${CURRENT_UPSTREAM:-blue}" >> $GITHUB_ENV
-
+          
       - name: Docker compose
         uses: appleboy/ssh-action@master
         with:
@@ -72,14 +71,13 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
             sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
-
-      - name: Check NEW deploy server URL
+      
+      - name: Check deploy server URL
         uses: jtalk/url-health-check-action@v3
         with:
-          url: http://${{ secrets.LIVE_SERVER_IP }}:${{env.CURRENT_PORT}}/env
-          max-attempts: 10  # 시도 횟수 증가
-          retry-delay: 15s  # 재시도 간격 증가
-          timeout: 30       # 타임아웃 시간 설정
+          url: http://${{ secrets.LIVE_SERVER_IP }}:${{env.STOPPED_PORT}}/env
+          max-attempts: 10
+          retry-delay: 15s
 
       - name: Change nginx upstream
         uses: appleboy/ssh-action@master
@@ -89,9 +87,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            sudo docker exec -i nginxserver bash -c 'echo "set \$service_url ${{ env.TARGET_UPSTREAM }};" > /etc/nginx/conf.d/service-env.inc && nginx -s reload'
+            sudo docker exec -i nginxserver bash -c 'echo "set \$service_url ${{ env.TARGET_UPSTREAM }};" > /etc/nginx/conf.d/service-env.inc && nginx -s reload' 
 
-      - name: Stop old server
+      - name: Stop current server
         uses: appleboy/ssh-action@master
         with:
           username: ubuntu
@@ -99,5 +97,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            sudo docker stop ${{env.TARGET_UPSTREAM}}  # TARGET이 아닌 이전 버전을 stop해야 함
-            sudo docker rm ${{env.TARGET_UPSTREAM}}
+            sudo docker stop ${{env.CURRENT_UPSTREAM}}
+            sudo docker rm ${{env.CURRENT_UPSTREAM}}
