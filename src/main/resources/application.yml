@@ -1,13 +1,13 @@
 spring:
   profiles:
-    active: local
+    active: ${PROFILE}
     group:
       local: local, common, secret
-      blue: blue, common, secret
-      green: green, common, secret
+      dev: dev, common, secret
+      prod: prod, common, secret
 
 server:
-  env: blue
+  env: dev
 
 ---
 
@@ -47,13 +47,13 @@ serverName: local_server
 spring:
   config:
     activate:
-      on-profile: blue
+      on-profile: dev
 
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
 
   data:
     redis:
@@ -62,7 +62,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -72,20 +72,20 @@ server:
   port: 8080
   serverAddress: ${EC2_PUBLIC_IP}
 
-serverName: blue_server
+serverName: dev_server
 
 ---
 
 spring:
   config:
     activate:
-      on-profile: green
+      on-profile: prod
 
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
 
   data:
     redis:
@@ -94,17 +94,17 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
 
 server:
-  port: 8081
+  port: 8080
   serverAddress: ${EC2_PUBLIC_IP}
 
-serverName: green_server
+serverName: prod_server
 
 ---
 
