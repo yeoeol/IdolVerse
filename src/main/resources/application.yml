@@ -1,13 +1,13 @@
 spring:
   profiles:
-    active: local
+    active: ${PROFILE}
     group:
       local: local, common, secret
       dev: dev, common, secret
       prod: prod, common, secret
 
 server:
-  env: local
+  env: dev
 
 ---
 
@@ -62,7 +62,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -94,7 +94,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

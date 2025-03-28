@@ -1,5 +1,5 @@
 FROM azul/zulu-openjdk:17-latest
+VOLUME /tmp
 ARG JAR_FILE=build/libs/*.jar
-ARG PROFILES=dev
 COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java", "-Dspring.profiles.active=${PROFILES}", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
