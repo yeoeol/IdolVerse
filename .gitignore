@@ -25,6 +25,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 DataInitializer.java
+application-local.yml
 
 ### NetBeans ###
 /nbproject/private/

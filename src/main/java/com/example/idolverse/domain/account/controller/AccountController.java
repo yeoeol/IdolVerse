@@ -18,6 +18,7 @@ import com.example.idolverse.domain.account.dto.RegisterResponseDto;
 import com.example.idolverse.domain.account.dto.TokenResponseDto;
 import com.example.idolverse.domain.account.service.AccountService;
 import com.example.idolverse.domain.account.service.RefreshTokenService;
+import com.example.idolverse.global.response.ApiResponseDto;
 import com.example.idolverse.global.security.jwt.JwtProperties;
 import com.example.idolverse.global.security.jwt.JwtProvider;
 
@@ -37,9 +38,9 @@ public class AccountController {
 
 	@Operation(summary = "회원가입")
 	@PostMapping("/register")
-	public ResponseEntity<RegisterResponseDto> register(@RequestBody RegisterRequestDto requestDto) {
+	public ApiResponseDto<RegisterResponseDto> register(@RequestBody RegisterRequestDto requestDto) {
 		RegisterResponseDto responseDto = accountService.register(requestDto);
-		return ResponseEntity.ok(responseDto);
+		return ApiResponseDto.success(responseDto);
 	}
 
 	@Operation(summary = "로그인")
