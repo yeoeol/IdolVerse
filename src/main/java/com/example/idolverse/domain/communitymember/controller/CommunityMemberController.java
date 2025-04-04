@@ -17,6 +17,7 @@ import com.example.idolverse.domain.communitymember.dto.CommunityMemberUpdateReq
 import com.example.idolverse.domain.communitymember.dto.CommunityRegisterRequestDto;
 import com.example.idolverse.domain.communitymember.service.CommunityMemberService;
 import com.example.idolverse.global.common.entity.CustomMemberDetails;
+import com.example.idolverse.global.response.ApiResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,17 +32,17 @@ public class CommunityMemberController {
 
 	@Operation(summary = "특정 커뮤니티 가입")
 	@PostMapping("/{urlPath}/register")
-	public ResponseEntity<CommunityMemberInfoDto> register(
+	public ApiResponseDto<CommunityMemberInfoDto> register(
 		@PathVariable String urlPath,
 		@RequestBody CommunityRegisterRequestDto requestDto
 	) {
 		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.register(urlPath, requestDto);
-		return ResponseEntity.ok(communityMemberInfoDto);
+		return ApiResponseDto.success(communityMemberInfoDto);
 	}
 
 	@Operation(summary = "특정 커뮤니티 내 회원 정보 조회")
 	@GetMapping("/{urlPath}/profile/{id}")
-	public ResponseEntity<CommunityMemberInfoDto> getMyPage(
+	public ApiResponseDto<CommunityMemberInfoDto> getMyPage(
 		@PathVariable String urlPath,
 		@PathVariable("id") Long communityMemberId,
 		@AuthenticationPrincipal CustomMemberDetails memberDetails
@@ -49,12 +50,12 @@ public class CommunityMemberController {
 		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.getInfo(
 			communityMemberId, memberDetails.getMemberId()
 		);
-		return ResponseEntity.ok(communityMemberInfoDto);
+		return ApiResponseDto.success(communityMemberInfoDto);
 	}
 
 	@Operation(summary = "특정 커뮤니티 내 회원 정보 수정")
 	@PatchMapping("/{urlPath}/profile/{id}")
-	public ResponseEntity<CommunityMemberInfoDto> updateMyPage(
+	public ApiResponseDto<CommunityMemberInfoDto> updateMyPage(
 		@PathVariable String urlPath,
 		@PathVariable("id") Long communityMemberId,
 		@ModelAttribute CommunityMemberUpdateRequestDto requestDto,
@@ -64,6 +65,6 @@ public class CommunityMemberController {
 		CommunityMemberInfoDto communityMemberInfoDto = communityMemberService.updateInfo(
 			communityMemberId, requestDto, file, memberDetails.getMemberId()
 		);
-		return ResponseEntity.ok(communityMemberInfoDto);
+		return ApiResponseDto.success(communityMemberInfoDto);
 	}
 }

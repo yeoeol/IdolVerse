@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.idolverse.domain.community.dto.CommunityCreateRequestDto;
 import com.example.idolverse.domain.community.dto.CommunityInfoDto;
 import com.example.idolverse.domain.community.service.CommunityService;
+import com.example.idolverse.global.response.ApiResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,8 +25,8 @@ public class CommunityController {
 
 	@Operation(summary = "커뮤니티 생성 (관리자 권한)")
 	@PostMapping("/create")
-	public ResponseEntity<CommunityInfoDto> communityCreate(@RequestBody CommunityCreateRequestDto requestDto) {
+	public ApiResponseDto<CommunityInfoDto> communityCreate(@RequestBody CommunityCreateRequestDto requestDto) {
 		CommunityInfoDto communityInfoDto = communityService.communityCreate(requestDto);
-		return ResponseEntity.ok(communityInfoDto);
+		return ApiResponseDto.success(communityInfoDto);
 	}
 }

@@ -13,6 +13,7 @@ import com.example.idolverse.domain.post.dto.PostRequestDto;
 import com.example.idolverse.domain.post.dto.PostResponseDto;
 import com.example.idolverse.domain.post.service.PostService;
 import com.example.idolverse.global.common.entity.CustomMemberDetails;
+import com.example.idolverse.global.response.ApiResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,21 +28,21 @@ public class PostController {
 
 	@Operation(summary = "특정 커뮤니티 게시글 작성")
 	@PostMapping("/{urlPath}/feed/posts")
-	public ResponseEntity<PostResponseDto> newPost(
+	public ApiResponseDto<PostResponseDto> newPost(
 		@PathVariable String urlPath,
 		@RequestBody PostRequestDto requestDto,
 		@AuthenticationPrincipal CustomMemberDetails customMemberDetails
 	) {
 		PostResponseDto responseDto = postService.post(urlPath, requestDto, customMemberDetails);
-		return ResponseEntity.ok(responseDto);
+		return ApiResponseDto.success(responseDto);
 	}
 
 	@Operation(summary = "특정 커뮤니티 전체 게시글 조회")
 	@GetMapping("/{urlPath}/feed")
-	public ResponseEntity<FeedTabPostsInfoDto> getPostsByUrlPath(
+	public ApiResponseDto<FeedTabPostsInfoDto> getPostsByUrlPath(
 		@PathVariable String urlPath
 	) {
 		FeedTabPostsInfoDto feedTabPostsInfoDto = postService.getAllPosts(urlPath);
-		return ResponseEntity.ok(feedTabPostsInfoDto);
+		return ApiResponseDto.success(feedTabPostsInfoDto);
 	}
 }

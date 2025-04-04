@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.idolverse.domain.member.dto.MemberInfoDto;
 import com.example.idolverse.domain.member.service.MemberService;
 import com.example.idolverse.global.common.entity.CustomMemberDetails;
+import com.example.idolverse.global.response.ApiResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,8 +25,8 @@ public class MemberController {
 
 	@Operation(summary = "통합 회원 정보 조회")
 	@GetMapping("/me")
-	public ResponseEntity<MemberInfoDto> getMemberInfo(@AuthenticationPrincipal CustomMemberDetails member) {
+	public ApiResponseDto<MemberInfoDto> getMemberInfo(@AuthenticationPrincipal CustomMemberDetails member) {
 		MemberInfoDto memberInfoDto = memberService.findByEmail(member.getUsername());
-		return ResponseEntity.ok(memberInfoDto);
+		return ApiResponseDto.success(memberInfoDto);
 	}
 }

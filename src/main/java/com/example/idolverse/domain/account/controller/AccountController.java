@@ -45,7 +45,7 @@ public class AccountController {
 
 	@Operation(summary = "로그인")
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponseDto> login(
+	public ApiResponseDto<LoginResponseDto> login(
 		HttpServletResponse response,
 		@RequestBody LoginRequestDto requestDto
 	) {
@@ -55,12 +55,12 @@ public class AccountController {
 		setHttpOnlyCookie(response, responseDto.refreshToken());
 
 		LoginResponseDto loginResponseDto = LoginResponseDto.from(responseDto.member());
-		return ResponseEntity.ok(loginResponseDto);
+		return ApiResponseDto.success(loginResponseDto);
 	}
 
 	@Operation(summary = "access 토큰 재발급")
 	@PostMapping("/refresh")
-	public ResponseEntity<LoginResponseDto> refresh(
+	public ApiResponseDto<LoginResponseDto> refresh(
 		HttpServletResponse response,
 		@RequestBody RefreshRequestDto requestDto
 	) {
@@ -69,7 +69,7 @@ public class AccountController {
 		setAccessTokenHeader(response, responseDto.accessToken());
 
 		LoginResponseDto loginResponseDto = LoginResponseDto.from(responseDto.member());
-		return ResponseEntity.ok(loginResponseDto);
+		return ApiResponseDto.success(loginResponseDto);
 	}
 
 	private void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
