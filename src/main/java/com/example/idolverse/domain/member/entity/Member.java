@@ -49,4 +49,9 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member")
 	private List<CommunityMember> communities = new ArrayList<>();
+
+	public Member update(String name) {
+		this.userKey = name;
+		return this;
+	}
 }
