@@ -2,19 +2,29 @@ package com.example.idolverse.global.common.entity;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.example.idolverse.domain.member.entity.Member;
 
-public class CustomMemberDetails implements UserDetails {
+import lombok.Getter;
 
-	private Member member;
+@Getter
+public class CustomMemberDetails implements UserDetails, OAuth2User {
+
+	private final Member member;
 
 	public CustomMemberDetails(Member member) {
 		this.member = member;
+	}
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return null;
 	}
 
 	@Override
@@ -32,8 +42,9 @@ public class CustomMemberDetails implements UserDetails {
 		return member.getEmail();
 	}
 
-	public Member getMember() {
-		return member;
+	@Override
+	public String getName() {
+		return member.getEmail();
 	}
 
 	public Long getMemberId() {

@@ -10,7 +10,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.idolverse.global.security.config.SecurityConfig;
+import com.example.idolverse.global.config.SecurityConfig;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
