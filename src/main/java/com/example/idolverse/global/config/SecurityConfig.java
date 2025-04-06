@@ -14,6 +14,7 @@ import org.springframework.util.AntPathMatcher;
 import com.example.idolverse.global.common.service.CustomUserDetailsService;
 import com.example.idolverse.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.example.idolverse.global.oauth2.service.CustomOAuth2MemberService;
+import com.example.idolverse.global.redis.BlackListService;
 import com.example.idolverse.global.security.jwt.JwtAuthenticationFilter;
 import com.example.idolverse.global.security.jwt.JwtProperties;
 import com.example.idolverse.global.security.jwt.JwtProvider;
@@ -29,13 +30,14 @@ public class SecurityConfig {
 	private final CustomUserDetailsService customUserDetailsService;
 	private final CustomOAuth2MemberService customOAuth2MemberService;
 	private final OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler;
+	private final BlackListService blackListService;
 	private final JwtProperties jwtProperties;
 	private final JwtProvider jwtProvider;
 	private final AntPathMatcher pathMatcher;
 
 	public static final String[] permitURI = {
 		"/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml",
-		"/api/v1/accounts/**",
+		"/api/v1/accounts/register", "/api/v1/accounts/login", "/api/v1/accounts/refresh",
 		"/redisTest",
 		"/hc", "/env"
 	};
@@ -62,7 +64,7 @@ public class SecurityConfig {
 			);
 
 		http
-			.addFilterBefore(new JwtAuthenticationFilter(jwtProperties, jwtProvider, pathMatcher),
+			.addFilterBefore(new JwtAuthenticationFilter(blackListService, jwtProperties, jwtProvider, pathMatcher),
 				UsernamePasswordAuthenticationFilter.class);
 
 		http

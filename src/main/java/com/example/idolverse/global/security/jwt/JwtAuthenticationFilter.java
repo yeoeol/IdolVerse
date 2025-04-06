@@ -11,6 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.idolverse.global.config.SecurityConfig;
+import com.example.idolverse.global.exception.GeneralException;
+import com.example.idolverse.global.exception.code.ErrorCode;
+import com.example.idolverse.global.redis.BlackListService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+	private final BlackListService blackListService;
 	private final JwtProperties jwtProperties;
 	private final JwtProvider jwtProvider;
 	private final AntPathMatcher pathMatcher;
@@ -36,11 +40,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-
+		System.out.println("JwtAuthenticationFilter.doFilterInternal 호출");
 		String authorizationHeader = request.getHeader(jwtProperties.getHeaderAuthorization());
-		String token = resolveHeader(authorizationHeader);
+		String token = jwtProvider.resolveHeader(authorizationHeader);
 		try {
 			if (jwtProvider.validateToken(token)) {
+				if (BlackListService.LOGOUT.equals(blackListService.find(token))) {
+					throw new GeneralException(ErrorCode.INVALID_TOKEN);
+				}
+
 				Authentication authentication = jwtProvider.getAuthentication(token);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
@@ -52,12 +60,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		filterChain.doFilter(request, response);
-	}
-
-	public String resolveHeader(String authorizationHeader) {
-		if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
-			return authorizationHeader.substring(7);
-		}
-		return null;
 	}
 }

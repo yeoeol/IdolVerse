@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.example.idolverse.global.common.service.CustomUserDetailsService;
 import com.example.idolverse.global.exception.GeneralException;
@@ -68,6 +69,13 @@ public class JwtProvider {
 		}
 	}
 
+	public String resolveHeader(String authorizationHeader) {
+		if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+			return authorizationHeader.substring(7);
+		}
+		return null;
+	}
+
 	public Authentication getAuthentication(String token) {
 		Claims claims = getClaims(token);
 		String email = claims.getSubject();
@@ -79,6 +87,10 @@ public class JwtProvider {
 	public String getSubject(String token) {
 		Claims claims = getClaims(token);
 		return claims.getSubject();
+	}
+
+	public long getExpirationTime(String token) {
+		return getClaims(token).getExpiration().getTime();
 	}
 
 	private Claims getClaims(String token) {

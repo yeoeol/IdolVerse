@@ -5,8 +5,10 @@ import java.time.Duration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +26,7 @@ import com.example.idolverse.global.security.jwt.JwtProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -70,6 +73,13 @@ public class AccountController {
 
 		LoginResponseDto loginResponseDto = LoginResponseDto.from(responseDto.member());
 		return ApiResponseDto.success(loginResponseDto);
+	}
+
+	@Operation(summary = "로그아웃")
+	@DeleteMapping("/logout")
+	public void logout(@RequestHeader("Authorization") String bearerToken) {
+		System.out.println("AccountController.logout");
+		accountService.logout(bearerToken);
 	}
 
 	private void setAccessTokenHeader(HttpServletResponse response, String accessToken) {

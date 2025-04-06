@@ -9,37 +9,39 @@ import org.springframework.stereotype.Service;
 
 import com.example.idolverse.global.exception.GeneralException;
 import com.example.idolverse.global.exception.code.ErrorCode;
+import com.example.idolverse.global.security.jwt.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class RedisService {
+public class BlackListService {
 
 	private final RedisTemplate<String, String> redisTemplate;
+	private final JwtProvider jwtProvider;
 
-	private final static String REFRESH_CACHE_NAME = "refreshToken";
+	public final static String LOGOUT = "logout";
 
-	public void save(String email, String refreshToken, long expiration) {
+	public void save(String accessToken) {
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+		long remainingTime = getRemainingTime(accessToken);
+
+		valueOperations.set(accessToken, LOGOUT, remainingTime, TimeUnit.MILLISECONDS);
+	}
+
+	public String find(String accessToken) {
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
-		String key = getKey(email);
-		valueOperations.set(key, refreshToken, expiration, TimeUnit.MILLISECONDS);
+		return valueOperations.get(accessToken);
 	}
 
-	public String find(String email) {
-		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-
-		return Optional.ofNullable(valueOperations.get(getKey(email)))
-			.orElseThrow(() -> new GeneralException(ErrorCode.INVALID_TOKEN));
+	public void delete(String accessToken) {
+		redisTemplate.delete(accessToken);
 	}
 
-	public void delete(String email) {
-		String key = getKey(email);
-		redisTemplate.delete(key);
-	}
-
-	private static String getKey(String email) {
-		return REFRESH_CACHE_NAME + ":" + email;
+	private long getRemainingTime(String accessToken) {
+		long currentTime = System.currentTimeMillis();
+		long expirationTime = jwtProvider.getExpirationTime(accessToken);
+		return expirationTime-currentTime;
 	}
 }

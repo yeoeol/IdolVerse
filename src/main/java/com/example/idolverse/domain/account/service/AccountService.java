@@ -14,6 +14,7 @@ import com.example.idolverse.domain.member.repository.MemberRepository;
 import com.example.idolverse.domain.member.service.MemberService;
 import com.example.idolverse.global.exception.GeneralException;
 import com.example.idolverse.global.exception.code.ErrorCode;
+import com.example.idolverse.global.redis.BlackListService;
 import com.example.idolverse.global.security.jwt.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class AccountService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 	private final RefreshTokenService refreshTokenService;
+	private final BlackListService blackListService;
 	private final MemberService memberService;
 
 	public RegisterResponseDto register(RegisterRequestDto requestDto) {
@@ -59,6 +61,16 @@ public class AccountService {
 		String accessToken = jwtProvider.generateAccessToken(member.getEmail());
 
 		return TokenResponseDto.of(accessToken, refreshToken, member);
+	}
+
+	public void logout(String bearerToken) {
+		String accessToken = jwtProvider.resolveHeader(bearerToken);
+		jwtProvider.validateToken(accessToken);
+
+		String email = jwtProvider.getSubject(accessToken);
+		refreshTokenService.deleteRefreshToken(email);
+
+		blackListService.save(accessToken);
 	}
 
 	private void validateEmail(String email) {
