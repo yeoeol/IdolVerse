@@ -14,13 +14,11 @@ import com.example.idolverse.domain.member.repository.MemberRepository;
 import com.example.idolverse.domain.member.service.MemberService;
 import com.example.idolverse.global.exception.GeneralException;
 import com.example.idolverse.global.exception.code.ErrorCode;
-import com.example.idolverse.global.redis.BlackListService;
 import com.example.idolverse.global.security.jwt.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AccountService {
 
@@ -31,6 +29,7 @@ public class AccountService {
 	private final BlackListService blackListService;
 	private final MemberService memberService;
 
+	@Transactional
 	public RegisterResponseDto register(RegisterRequestDto requestDto) {
 		validateEmail(requestDto.email());
 		String encodedPassword = passwordEncoder.encode(requestDto.password());
@@ -38,6 +37,7 @@ public class AccountService {
 		return RegisterResponseDto.from(memberRepository.save(member));
 	}
 
+	@Transactional
 	public TokenResponseDto login(LoginRequestDto requestDto) {
 		Member member = memberRepository.findByEmail(requestDto.email())
 			.filter(m -> passwordEncoder.matches(requestDto.password(), m.getPassword()))
@@ -50,6 +50,7 @@ public class AccountService {
 		return TokenResponseDto.of(accessToken, refreshToken, member);
 	}
 
+	@Transactional
 	public TokenResponseDto refresh(RefreshRequestDto requestDto) {
 		jwtProvider.validateToken(requestDto.refreshToken());
 
@@ -63,6 +64,7 @@ public class AccountService {
 		return TokenResponseDto.of(accessToken, refreshToken, member);
 	}
 
+	@Transactional
 	public void logout(String bearerToken) {
 		String accessToken = jwtProvider.resolveHeader(bearerToken);
 		jwtProvider.validateToken(accessToken);
@@ -70,7 +72,7 @@ public class AccountService {
 		String email = jwtProvider.getSubject(accessToken);
 		refreshTokenService.deleteRefreshToken(email);
 
-		blackListService.save(accessToken);
+		blackListService.saveBlackList(accessToken);
 	}
 
 	private void validateEmail(String email) {

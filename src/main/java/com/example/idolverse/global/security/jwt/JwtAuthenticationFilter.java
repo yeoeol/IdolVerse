@@ -7,13 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.idolverse.global.config.SecurityConfig;
-import com.example.idolverse.global.exception.GeneralException;
-import com.example.idolverse.global.exception.code.ErrorCode;
-import com.example.idolverse.global.redis.BlackListService;
+import com.example.idolverse.domain.account.service.BlackListService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -41,14 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
 		System.out.println("JwtAuthenticationFilter.doFilterInternal 호출");
+
 		String authorizationHeader = request.getHeader(jwtProperties.getHeaderAuthorization());
 		String token = jwtProvider.resolveHeader(authorizationHeader);
 		try {
-			if (jwtProvider.validateToken(token)) {
-				if (BlackListService.LOGOUT.equals(blackListService.find(token))) {
-					throw new GeneralException(ErrorCode.INVALID_TOKEN);
-				}
-
+			if (jwtProvider.validateToken(token) && (blackListService.findBlackList(token) == null)) {
 				Authentication authentication = jwtProvider.getAuthentication(token);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
