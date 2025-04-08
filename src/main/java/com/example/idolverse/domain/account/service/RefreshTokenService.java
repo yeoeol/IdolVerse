@@ -28,12 +28,12 @@ public class RefreshTokenService {
 
 	@Transactional
 	public void deleteRefreshToken(String email) {
-		redisService.delete(email);
+		redisService.delete(getKey(email));
 	}
 
 	@Transactional(readOnly = true)
 	public String findRefreshToken(String email) {
-		String refreshToken = redisService.find(email);
+		String refreshToken = redisService.find(getKey(email));
 		if (refreshToken == null) {
 			throw new GeneralException(ErrorCode.INVALID_TOKEN);
 		}
