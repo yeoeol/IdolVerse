@@ -2,6 +2,7 @@ package com.example.idolverse.domain.account.controller;
 
 import java.time.Duration;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,12 @@ import com.example.idolverse.global.security.jwt.JwtProperties;
 import com.example.idolverse.global.security.jwt.JwtProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,8 +47,12 @@ public class AccountController {
 	private final JwtProperties jwtProperties;
 
 	@Operation(summary = "회원가입")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "회원가입 성공"),
+		@ApiResponse(responseCode = "409", description = "이미 존재하는 이메일")
+	})
 	@PostMapping("/register")
-	public ApiResponseDto<RegisterResponseDto> register(@RequestBody RegisterRequestDto requestDto) {
+	public ApiResponseDto<RegisterResponseDto> register(@ParameterObject @RequestBody RegisterRequestDto requestDto) {
 		RegisterResponseDto responseDto = accountService.register(requestDto);
 		return ApiResponseDto.success(responseDto);
 	}
