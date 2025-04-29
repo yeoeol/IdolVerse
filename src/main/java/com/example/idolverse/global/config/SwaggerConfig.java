@@ -1,5 +1,6 @@
 package com.example.idolverse.global.config;
 
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +21,14 @@ public class SwaggerConfig {
 				"BearerAuth", getSecurityScheme()
 			))
 			.addSecurityItem(new SecurityRequirement().addList("BearerAuth"));
+	}
+
+	@Bean
+	public GroupedOpenApi publicApi() {
+		return GroupedOpenApi.builder()
+			.group("IdolVerse")
+			.packagesToScan("com.example.idolverse.domain")
+			.build();
 	}
 
 	private Info getInfo() {
