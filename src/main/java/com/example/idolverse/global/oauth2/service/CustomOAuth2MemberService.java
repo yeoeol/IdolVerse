@@ -1,5 +1,7 @@
 package com.example.idolverse.global.oauth2.service;
 
+import java.util.Map;
+
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -25,13 +27,19 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 
+		Map<String, Object> attributes = oAuth2User.getAttributes();
+		/*
+		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+			System.out.printf("테스트 : key = %s, value = %s\n", entry.getKey(), entry.getValue());
+		} */
+
 		String registrationId = userRequest.getClientRegistration().getRegistrationId();
 		GoogleResponse googleResponse = null;
 		if (registrationId.equals("google")) {
-			googleResponse = new GoogleResponse(oAuth2User.getAttributes());
+			googleResponse = new GoogleResponse(attributes);
 		}
 		else {
-			return null;
+			throw new OAuth2AuthenticationException("Unsupported OAuth2 provider: " + registrationId);
 		}
 
 		Member member = saveOrUpdate(googleResponse);

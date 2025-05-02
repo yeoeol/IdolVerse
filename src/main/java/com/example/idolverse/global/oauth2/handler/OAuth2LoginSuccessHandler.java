@@ -41,6 +41,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
 		setAccessTokenHeader(response, accessToken);
 		setHttpOnlyCookie(response, refreshToken);
+
+		System.out.println("onAuthenticationSuccess 호출 완료");
+		getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080/swagger-ui/index.html#/");
 	}
 
 	private void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
