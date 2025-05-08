@@ -52,7 +52,7 @@ public class AccountController {
 		@ApiResponse(responseCode = "409", description = "이미 존재하는 이메일")
 	})
 	@PostMapping("/register")
-	public ApiResponseDto<RegisterResponseDto> register(@ParameterObject @RequestBody RegisterRequestDto requestDto) {
+	public ApiResponseDto<RegisterResponseDto> register(@RequestBody RegisterRequestDto requestDto) {
 		RegisterResponseDto responseDto = accountService.register(requestDto);
 		return ApiResponseDto.success(responseDto);
 	}

@@ -12,7 +12,7 @@ import com.example.idolverse.domain.communitymember.dto.CommunityMemberUpdateReq
 import com.example.idolverse.domain.communitymember.dto.CommunityRegisterRequestDto;
 import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.communitymember.repository.CommunityMemberRepository;
-import com.example.idolverse.domain.image.service.ImageService;
+import com.example.idolverse.global.image.service.AzureBlobService;
 import com.example.idolverse.domain.member.entity.Member;
 import com.example.idolverse.domain.member.service.MemberService;
 import com.example.idolverse.global.exception.GeneralException;
@@ -28,7 +28,9 @@ public class CommunityMemberService {
 	private final CommunityMemberRepository communityMemberRepository;
 	private final CommunityService communityService;
 	private final MemberService memberService;
-	private final ImageService imageService;
+	private final AzureBlobService azureBlobService;
+
+	private final String CONTAINER_NAME = "idolverseimages";
 
 	public boolean existsMemberInCommunity(Community community, Member member) {
 		if (communityMemberRepository.existsByCommunityAndMember(community, member)) {
@@ -60,7 +62,7 @@ public class CommunityMemberService {
 			.orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
 		validateMemberId(communityMemberId, memberId);
 
-		String profileImageUrl = imageService.uploadProfileImage(file);
+		String profileImageUrl = azureBlobService.uploadFile(file, CONTAINER_NAME);
 
 		communityMember.update(requestDto.profileName(), requestDto.profileComment(), profileImageUrl);
 		return CommunityMemberInfoDto.from(communityMember);
