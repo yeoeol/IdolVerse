@@ -1,6 +1,5 @@
 package com.example.idolverse.domain.comment.entity;
 
-import com.example.idolverse.domain.community.entity.Community;
 import com.example.idolverse.domain.communitymember.entity.CommunityMember;
 import com.example.idolverse.domain.post.entity.Post;
 import com.example.idolverse.global.common.entity.BaseEntity;
@@ -36,7 +35,8 @@ public class Comment extends BaseEntity {
             .post(post)
             .build();
 
-        post.addComment(savedComment);
+        post.addComment(comment);
+        return comment;
     }
 
     // 연관관계 설정용 내부 메서드
