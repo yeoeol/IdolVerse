@@ -45,4 +45,14 @@ public class PostController {
 		FeedTabPostsInfoDto feedTabPostsInfoDto = postService.getAllPosts(urlPath);
 		return ApiResponseDto.success(feedTabPostsInfoDto);
 	}
+
+	@Operation(summary = "특정 커뮤니티 특정 게시글 조회")
+	@GetMapping("/{urlPath}/fanpost/{postId}")
+	public ApiResponseDto<PostResponseDto> getPost(
+			@PathVariable String urlPath,
+			@PathVariable Long postId
+	) {
+		PostResponseDto postResponseDto = postService.getPostById(postId);
+		return ApiResponseDto.success(postResponseDto);
+	}
 }

@@ -3,6 +3,8 @@ package com.example.idolverse.domain.post.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.idolverse.global.exception.GeneralException;
+import com.example.idolverse.global.exception.code.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,5 +61,17 @@ public class PostService {
 
 		PostsInfoDto postsInfoDto = PostsInfoDto.from(postsInfoDtos);
 		return FeedTabPostsInfoDto.from(postsInfoDto);
+	}
+
+	public PostResponseDto getPostById(Long postId) {
+		Post post = postRepository.findById(postId)
+				.orElseThrow(() -> new GeneralException(ErrorCode.POST_NOT_FOUND));
+
+		return PostResponseDto.from(post);
+	}
+
+	public Post findById(Long postId) {
+		return postRepository.findById(postId)
+				.orElseThrow(() -> new GeneralException(ErrorCode.POST_NOT_FOUND));
 	}
 }

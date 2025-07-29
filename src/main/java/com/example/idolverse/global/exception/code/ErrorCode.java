@@ -25,7 +25,10 @@ public enum ErrorCode {
 	COMMUNITY_NOT_FOUND(HttpStatus.BAD_REQUEST, "COMMUNITY001", "Community를 찾을 수 없습니다."),
 
 	// CommunityMember Errors
-	COMMUNITY_MEMBER_NOT_REGISTER(HttpStatus.BAD_REQUEST, "COMMUNITYMEMBER001", "해당 Community에 가입되어 있지 않은 Member입니다.");
+	COMMUNITY_MEMBER_NOT_REGISTER(HttpStatus.BAD_REQUEST, "COMMUNITYMEMBER001", "해당 Community에 가입되어 있지 않은 Member입니다."),
+
+	// Post Errors
+	POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST001", "해당 Community에 존재하지 않는 게시글입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
