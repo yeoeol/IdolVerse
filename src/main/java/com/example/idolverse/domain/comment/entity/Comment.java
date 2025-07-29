@@ -29,6 +29,16 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public static Comment create(String body, CommunityMember communityMember, Post post) {
+        Comment comment = Comment.builder()
+            .body(body)
+            .communityMember(communityMember)
+            .post(post)
+            .build();
+
+        post.addComment(savedComment);
+    }
+
     // 연관관계 설정용 내부 메서드
     public void setPost(Post post) {
         this.post = post;
