@@ -6,6 +6,7 @@
     <img src="https://img.shields.io/badge/Spring Security-006600?style=flat-square&logo=SpringSecurity&logoColor=white">
     <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white">
     <img src="https://img.shields.io/badge/Mariadb-003545?style=flat-square&logo=MariaDB&logoColor=white">
+    <img src="https://img.shields.io/badge/postgresql-4169e1?style=flat-square&logo=postgresql&logoColor=white">
 </div>
 <br>
 
