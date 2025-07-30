@@ -28,7 +28,10 @@ public enum ErrorCode {
 	COMMUNITY_MEMBER_NOT_REGISTER(HttpStatus.BAD_REQUEST, "COMMUNITYMEMBER001", "해당 Community에 가입되어 있지 않은 Member입니다."),
 
 	// Post Errors
-	POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST001", "해당 Community에 존재하지 않는 게시글입니다.");
+	POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST001", "해당 Community에 존재하지 않는 게시글입니다."),
+
+    // Cheer Errors
+    CHEER_NOT_FOUND(HttpStatus.BAD_REQUEST, "CHEER001", "해당 Post에 응원이 존재하지 않습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
