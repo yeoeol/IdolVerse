@@ -26,6 +26,11 @@ public class CheerService {
         CommunityMember communityMember = communityMemberService.findById(cheerRequestDto.communityMemberId());
         Post post = postService.findById(cheerRequestDto.postId());
 
+        // 응원 중복 체크
+        if (cheerRepository.existsByCommunityMemberAndPost(communityMember, post)) {
+            throw new GeneralException(ErrorCode.CHEER_ALREADY_EXISTS);
+        }
+
         Cheer cheer = Cheer.create(communityMember, post);
         cheerRepository.save(cheer);
     }

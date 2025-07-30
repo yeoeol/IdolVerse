@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CheerRepository extends JpaRepository<Cheer, Long> {
     int deleteByCommunityMemberAndPost(CommunityMember communityMember, Post post);
+
+    boolean existsByCommunityMemberAndPost(CommunityMember communityMember, Post post);
 }

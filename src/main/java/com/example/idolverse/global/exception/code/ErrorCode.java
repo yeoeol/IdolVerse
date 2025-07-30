@@ -31,7 +31,8 @@ public enum ErrorCode {
 	POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST001", "해당 Community에 존재하지 않는 게시글입니다."),
 
     // Cheer Errors
-    CHEER_NOT_FOUND(HttpStatus.BAD_REQUEST, "CHEER001", "해당 Post에 응원이 존재하지 않습니다.");
+    CHEER_NOT_FOUND(HttpStatus.BAD_REQUEST, "CHEER001", "해당 Post에 응원이 존재하지 않습니다."),
+    CHEER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "CHEER002", "이미 해당 Post에 응원이 존재합니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
