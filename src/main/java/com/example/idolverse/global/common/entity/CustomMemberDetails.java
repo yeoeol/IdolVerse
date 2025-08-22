@@ -1,17 +1,15 @@
 package com.example.idolverse.global.common.entity;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
+import com.example.idolverse.domain.member.entity.Member;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.example.idolverse.domain.member.entity.Member;
-
-import lombok.Getter;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class CustomMemberDetails implements UserDetails, OAuth2User {
@@ -21,6 +19,7 @@ public class CustomMemberDetails implements UserDetails, OAuth2User {
 	public CustomMemberDetails(Member member) {
 		this.member = member;
 	}
+
 
 	@Override
 	public Map<String, Object> getAttributes() {
